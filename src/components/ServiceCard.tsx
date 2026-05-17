@@ -5,6 +5,7 @@ import type { Service, ServiceType } from '../lib/api';
 export const SERVICE_ICONS: Record<ServiceType, React.ElementType> = {
   'gutter-cleaning': Wind,
   'window-cleaning': Droplets,
+  'window-cleaning-interior': Droplets,
   'pressure-washing': Sparkles,
   'house-cleaning-standard': Home,
   'house-cleaning-deep': Sparkles,
