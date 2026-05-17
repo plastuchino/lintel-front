@@ -567,9 +567,9 @@ When a customer uses a **referral or promo code**, the split adjusts to account 
 
 | Party | Standard | With Promo Code |
 |-------|----------|-----------------|
-| Lintel platform | 60% | 25% |
+| Lintel platform | 60% | 55% |
 | Service worker (you) | 40% | 40% |
-| Promo code earner | — | 35% |
+| Promo code earner | — | 5% |
 
 The **service worker always keeps 40%** — that never changes. The promo adjustment comes out of Lintel's share, not yours.
 

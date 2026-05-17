@@ -152,8 +152,10 @@ export default function Home() {
           {/* Greeting */}
           <div className="mb-8">
             <h1 className="text-4xl font-black text-black leading-tight">
-              What needs done,{' '}
-              <span className="text-uber-gray-400">{user?.name?.split(' ')[0] ?? 'there'}?</span>
+              What needs work,{' '}
+
+              {/* {console.log("this is what user is:", user)} */}
+              <span className="text-uber-gray-400">{user?.name?.split(' ')[0] ?? 'partner'}?</span>
             </h1>
             <p className="text-uber-gray-400 text-sm mt-1">Book a service with lintel.</p>
           </div>

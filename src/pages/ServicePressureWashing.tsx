@@ -47,7 +47,7 @@ export default function ServicePressureWashing() {
     <div className="min-h-screen bg-white text-black" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
       <Helmet>
         <title>Pressure Washing in Bethesda &amp; Rockville, MD | Lintel</title>
-        <meta name="description" content="Professional pressure washing in Bethesda, Rockville, and Montgomery County, MD. Driveways, patios, decks, siding, and sidewalks. Fully insured, starting at $149. Book online." />
+        <meta name="description" content="Professional pressure washing in Bethesda, Rockville, and Montgomery County, MD. Driveways, patios, decks, siding, and sidewalks. Fully insured, starting at $200. Book online." />
         <link rel="canonical" href="https://uselintel.pro/services/pressure-washing" />
       </Helmet>
 
@@ -83,7 +83,7 @@ export default function ServicePressureWashing() {
             Pressure Washing in<br />Bethesda &amp; Rockville, MD
           </h1>
           <p className="text-sm text-black/55 leading-relaxed max-w-xl mb-8">
-            Years of grime, algae, and mold don't stand a chance. We bring commercial-grade equipment to your driveway, patio, deck, siding, or sidewalk — and leave it looking new. Fully insured, starting at $149.
+            Years of grime, algae, and mold don't stand a chance. We bring commercial-grade equipment to your driveway, patio, deck, siding, or sidewalk — and leave it looking new. Fully insured, starting at $200.
           </p>
           <button
             onClick={() => navigate('/')}
@@ -143,8 +143,8 @@ export default function ServicePressureWashing() {
             <div className="px-5 py-3 text-[11px] font-bold tracking-[0.1em] uppercase">Typical Time</div>
           </div>
           {[
-            ['Driveway (standard)', '$149', '60–90 min'],
-            ['Patio or Deck', '$149', '60–90 min'],
+            ['Driveway (standard)', '$200', '60–90 min'],
+            ['Patio or Deck', '$200', '60–90 min'],
             ['Siding (per side)', '$99', '45–60 min'],
             ['Multiple surfaces', 'Bundled pricing', '2–3 hrs'],
           ].map(([surface, price, time], i) => (
@@ -189,12 +189,12 @@ export default function ServicePressureWashing() {
           <Link to="/services/gutter-cleaning" className="border border-black/10 p-5 hover:border-black/30 transition-colors">
             <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest mb-1">Service</p>
             <p className="text-sm font-bold text-black">Gutter Cleaning</p>
-            <p className="text-xs text-black/50 mt-1">Ground-level vacuum cleaning. From $89.</p>
+            <p className="text-xs text-black/50 mt-1">Ground-level vacuum cleaning. From $149.</p>
           </Link>
           <Link to="/services/window-cleaning" className="border border-black/10 p-5 hover:border-black/30 transition-colors">
             <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest mb-1">Service</p>
             <p className="text-sm font-bold text-black">Window Cleaning</p>
-            <p className="text-xs text-black/50 mt-1">Streak-free interior or exterior. From $119.</p>
+            <p className="text-xs text-black/50 mt-1">Streak-free interior or exterior. From $250.</p>
           </Link>
           <Link to="/blog/pressure-washing-driveway-maryland" className="border border-black/10 p-5 hover:border-black/30 transition-colors">
             <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest mb-1">Blog</p>

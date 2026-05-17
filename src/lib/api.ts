@@ -28,6 +28,7 @@ api.interceptors.response.use(
 export type ServiceType =
   | 'gutter-cleaning'
   | 'window-cleaning'
+  | 'window-cleaning-interior'
   | 'pressure-washing'
   | 'house-cleaning-standard'
   | 'house-cleaning-deep'

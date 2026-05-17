@@ -47,7 +47,7 @@ export default function ServiceGutterCleaning() {
     <div className="min-h-screen bg-white text-black" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
       <Helmet>
         <title>Gutter Cleaning in Bethesda &amp; Rockville, MD | Lintel</title>
-        <meta name="description" content="Professional gutter cleaning in Bethesda, Rockville, and Montgomery County, MD. Ground-level vacuum equipment, fully insured, starting at $89. Book online in minutes." />
+        <meta name="description" content="Professional gutter cleaning in Bethesda, Rockville, and Montgomery County, MD. Ground-level vacuum equipment, fully insured, starting at $149. Book online in minutes." />
         <link rel="canonical" href="https://uselintel.pro/services/gutter-cleaning" />
       </Helmet>
 
@@ -83,7 +83,7 @@ export default function ServiceGutterCleaning() {
             Gutter Cleaning in<br />Bethesda &amp; Rockville, MD
           </h1>
           <p className="text-sm text-black/55 leading-relaxed max-w-xl mb-8">
-            Clogged gutters are one of the most common causes of water damage in Montgomery County homes. We clear every inch of debris using professional vacuum equipment — no ladders, no mess, fully insured. Starting at $89.
+            Clogged gutters are one of the most common causes of water damage in Montgomery County homes. We clear every inch of debris using professional vacuum equipment — no ladders, no mess, fully insured. Starting at $149.
           </p>
           <button
             onClick={() => navigate('/')}
@@ -143,8 +143,8 @@ export default function ServiceGutterCleaning() {
             <div className="px-5 py-3 text-[11px] font-bold tracking-[0.1em] uppercase">Typical Time</div>
           </div>
           {[
-            ['Small (< 1,500 sq ft)', '$89', '45 min'],
-            ['Medium (1,500–2,500 sq ft)', '$109', '60–75 min'],
+            ['Small (< 1,500 sq ft)', '$149', '45 min'],
+            ['Medium (1,500–2,500 sq ft)', '$169', '60–75 min'],
             ['Large (2,500+ sq ft)', 'Custom quote', '90+ min'],
           ].map(([size, price, time], i) => (
             <div key={size} className={`grid grid-cols-3 border-t border-black/10 ${i % 2 === 1 ? 'bg-black/[0.02]' : ''}`}>
@@ -188,12 +188,12 @@ export default function ServiceGutterCleaning() {
           <Link to="/services/pressure-washing" className="border border-black/10 p-5 hover:border-black/30 transition-colors">
             <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest mb-1">Service</p>
             <p className="text-sm font-bold text-black">Pressure Washing</p>
-            <p className="text-xs text-black/50 mt-1">Driveways, patios, siding & more. From $149.</p>
+            <p className="text-xs text-black/50 mt-1">Driveways, patios, siding & more. From $200.</p>
           </Link>
           <Link to="/services/window-cleaning" className="border border-black/10 p-5 hover:border-black/30 transition-colors">
             <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest mb-1">Service</p>
             <p className="text-sm font-bold text-black">Window Cleaning</p>
-            <p className="text-xs text-black/50 mt-1">Streak-free interior or exterior. From $119.</p>
+            <p className="text-xs text-black/50 mt-1">Streak-free interior or exterior. From $250.</p>
           </Link>
           <Link to="/blog/how-often-clean-gutters-maryland" className="border border-black/10 p-5 hover:border-black/30 transition-colors">
             <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest mb-1">Blog</p>

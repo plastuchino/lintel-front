@@ -4,8 +4,13 @@ import { Helmet } from 'react-helmet-async';
 import { Shield, Clock, CheckCircle, ChevronRight, ArrowRight, Star } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { useBookingStore } from '../store/bookingStore';
+
 import { AddressSearch } from '../components/AddressSearch';
 import logo from '../assets/logo.jpeg';
+
+import image_1 from "../assets/worker_1.jpeg"
+import image_2 from "../assets/worker_2.jpg"
+
 
 const SERVICES = [
   { id: 'gutter-cleaning',         code: 'LNT-001', name: 'Gutter Cleaning',   desc: 'Clear out leaves, debris, and blockages so water drains away from your home — not into it.',  price: '$89',  icon: GutterIcon },
@@ -44,6 +49,30 @@ const STATS = [
   { value: '100%', label: 'Background Checked' },
 ];
 
+// TODO: Replace placeholder data with real worker names, schools, grades, services, and stats
+const TEAM = [
+  {
+    // TODO: Replace 'Add photo' image slot — import worker photo and use it as `src` below
+    name: 'Sebastian',
+    school: 'Walter Johnson High School',
+    grade: 'Grade 12',
+    services: ['Gutters', 'Windows', 'Pressure Wash'],
+    jobs: '14',
+    rating: '4.85',
+    src: image_1
+  },
+  {
+    name: 'Alban',
+    school: 'Walter Johnson High School',
+    grade: 'Grade 12',
+    services: ['Windows', 'Pressure Wash', 'Gutters'],
+    jobs: '15',
+    rating: '4.92',
+    src: image_2
+  },
+  
+];
+
 export default function LandingPage() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
@@ -68,7 +97,19 @@ export default function LandingPage() {
       </Helmet>
 
       {/* ── Nav ─────────────────────────────────────────────────────────── */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-black/10">
+      <header className="fixed top-0 left-0 right-0 z-50">
+        {/* Announcement banner */}
+        <div className="bg-[#008060]">
+          <div className="h-9 flex items-center justify-center px-6 gap-3">
+            <div className="w-1 h-1 bg-white/50 rounded-full flex-shrink-0" />
+            <span className="text-white text-[10px] font-semibold tracking-[0.2em] uppercase font-mono text-center">
+              Home Services by Students · Montgomery County, MD · Fully Insured
+            </span>
+            <div className="w-1 h-1 bg-white/50 rounded-full flex-shrink-0" />
+          </div>
+        </div>
+        {/* Nav bar */}
+        <div className="bg-white border-b border-black/10">
         <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
             <img src={logo} alt="lintel" className="h-7 w-7 rounded-full object-cover" />
@@ -92,10 +133,12 @@ export default function LandingPage() {
             </Link>
           </div>
         </div>
+        </div>
       </header>
 
       {/* ── Hero ────────────────────────────────────────────────────────── */}
-      <section className="pt-14 min-h-screen flex items-center relative overflow-hidden">
+      {/* pt accounts for fixed header: 36px banner + 56px nav = 92px */}
+      <section className="pt-[92px] min-h-screen flex items-center relative overflow-hidden">
         {/* Dot grid background */}
         <div className="absolute inset-0" style={{
           backgroundImage: 'radial-gradient(circle, #00000015 1px, transparent 1px)',
@@ -107,19 +150,19 @@ export default function LandingPage() {
           {/* Left */}
           <div className="flex-1 max-w-xl">
             <div className="inline-flex items-center gap-2 border border-black/20 px-3 py-1 mb-8">
-              <div className="w-1.5 h-1.5 bg-black rounded-full animate-pulse" />
+              <div className="w-1.5 h-1.5 bg-[#008060] rounded-full animate-pulse" />
               <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-black/60 font-mono">
-                50+ Homes Completed · Fully Insured
+                99+ Homes Completed · Fully Insured
               </span>
             </div>
 
-            <h1 className="text-4xl lg:text-5xl font-black text-black leading-[1.08] mb-5 tracking-tight uppercase">
-              Home Services,<br />On Demand.
+            <h1 className="text-5xl lg:text-6xl font-black text-black leading-[1.08] mb-5 tracking-tight uppercase">
+              Home Services<br />By Students.
             </h1>
 
-            <p className="text-sm text-black/50 leading-relaxed mb-10 max-w-sm">
-              Vetted, background-checked students — fully insured, always on time.
-              Book a gutter clean, deep clean, lawn mow, or pressure wash in under two minutes.
+            <p className="text-base text-black/50 leading-relaxed mb-10 max-w-sm">
+              We're a team of high school students from Montgomery County. We take this seriously —
+              every job is insured, every worker is background-checked, and you only pay once you're satisfied.
             </p>
 
             {/* Address input */}
@@ -169,8 +212,68 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-black/10">
             {STATS.map(({ value, label }) => (
               <div key={label} className="px-8 py-7 text-center">
-                <p className="text-2xl font-black text-black tracking-tight">{value}</p>
-                <p className="text-[11px] font-mono text-black/40 tracking-[0.12em] uppercase mt-1">{label}</p>
+                <p className="text-3xl font-black text-black tracking-tight">{value}</p>
+                <p className="text-xs font-mono text-black/40 tracking-[0.12em] uppercase mt-1">{label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Meet the Team ───────────────────────────────────────────────── */}
+      <section className="py-20 border-t border-black/10 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="mb-12">
+            <p className="text-[10px] font-mono text-black/35 tracking-[0.2em] uppercase mb-1">Who We Are</p>
+            <h2 className="text-3xl font-black text-black tracking-tight uppercase">Students Doing Serious Work</h2>
+            <p className="text-base text-black/45 max-w-lg mt-3 leading-relaxed">
+              We're not a faceless company. We're your neighbors — high school students who show up,
+              do the job right, and stand behind our work with a $1M insurance policy.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-black/10">
+            {TEAM.map(({ name, school, grade, services, jobs, rating, src }, i) => (
+              <div key={i} className="bg-white p-8 flex flex-col gap-5">
+{/*                 
+                  TODO: Replace this placeholder with a real worker photo.
+                  Import the image at the top of the file, e.g.:
+                    import worker1Photo from '../assets/worker1.jpg';
+                  Then replace the gray box below with:
+                                   */}
+
+                {/* <img src={src} alt={name} className="w-full aspect-[4/3] object-cover" /> */}
+
+                <div className="w-full rounded-[30px] aspect-[4/3] bg-black/5 border border-black/10 flex flex-col items-center justify-center gap-2">
+                  <img src={src} alt={name} className="w-full aspect-[4/3] object-cover rounded-[30px]" />
+
+                  {/* <div className="w-14 h-14 rounded-full bg-black/10 border border-black/15 flex items-center justify-center">
+                    <span className="text-black/30 text-lg font-bold">{name[0]}</span>
+                  </div>
+                  <p className="text-[9px] font-mono text-black/25 tracking-[0.15em] uppercase">Add Photo Here</p> */}
+                </div>
+
+                <div>
+                  <p className="text-lg font-bold text-black uppercase tracking-wide">{name}</p>
+                  <p className="font-mono text-black/40 mt-0.5">{grade} · {school}</p>
+                </div>
+
+                <div className="flex gap-1 flex-wrap">
+                  {services.map(s => (
+                    <span key={s} className="px-2 py-0.5 border border-black/15 text-sm font-mono text-black/50 tracking-[0.1em] uppercase">{s}</span>
+                  ))}
+                </div>
+
+                <div className="flex gap-6 pt-3 border-t border-black/8">
+                  <div>
+                    <p className="text-base text-xl font-black text-black">{jobs}</p>
+                    <p className="text-sm font-mono text-black/35 uppercase tracking-wider mt-0.5">Jobs Done</p>
+                  </div>
+                  <div>
+                    <p className="text-base text-xl font-black text-black">{rating}★</p>
+                    <p className="text-sm font-mono text-black/35 uppercase tracking-wider mt-0.5">Rating</p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -178,14 +281,18 @@ export default function LandingPage() {
       </section>
 
       {/* ── Trust pillars ───────────────────────────────────────────────── */}
-      <section id="trust" className="py-20 bg-white">
+      <section id="trust" className="py-20 bg-white border-t border-black/10">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-12">
             <p className="text-[10px] font-mono text-black/35 tracking-[0.2em] uppercase mb-1">Why Lintel</p>
-            <h2 className="text-2xl font-black text-black tracking-tight uppercase">Built Around Your Peace of Mind</h2>
+            <h2 className="text-3xl font-black text-black tracking-tight uppercase">Built Around Your Peace of Mind</h2>
+            <p className="text-base text-black/45 max-w-lg mt-3 leading-relaxed">
+              We know "high school students" might raise questions. Here's what we put in place so
+              the answer is always: yes, they did an excellent job.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-black/10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-black/10">
             {[
               {
                 Icon: Shield,
@@ -194,13 +301,8 @@ export default function LandingPage() {
               },
               {
                 Icon: CheckCircle,
-                title: 'Background Verified',
-                desc: 'Every student on our network passes a full identity check and background screen before taking their first booking. Your home, your rules.',
-              },
-              {
-                Icon: Star,
-                title: 'Rated After Every Job',
-                desc: 'Homeowners rate each visit. Workers below 4.5★ are paused and reviewed. We maintain a 4.9★ network average.',
+                title: 'Background Verified & Top-Rated',
+                desc: 'Every student passes a full identity check and background screen before their first booking. Homeowners rate each visit — workers below 4.5★ are paused and reviewed. We maintain a 4.9★ network average.',
               },
               {
                 Icon: Clock,
@@ -209,21 +311,16 @@ export default function LandingPage() {
               },
               {
                 Icon: CheckCircle,
-                title: 'Pay After Confirmation',
-                desc: 'Your card is only charged once you confirm the job is complete. You hold the confirmation code — no code, no charge.',
-              },
-              {
-                Icon: Shield,
-                title: 'Satisfaction Guarantee',
-                desc: "Not happy with the result? Message us within 24 hours and we'll send someone back, free of charge.",
+                title: 'Pay After Confirmation & Satisfaction Guarantee',
+                desc: "Your card is only charged once you confirm the job is complete — you hold the code, no code means no charge. Not happy? Message us within 24 hours and we'll send someone back, free of charge.",
               },
             ].map(({ Icon, title, desc }) => (
               <div key={title} className="bg-white p-8">
                 <div className="w-9 h-9 border border-black/15 flex items-center justify-center mb-5">
                   <Icon className="w-4 h-4 text-black" strokeWidth={1.5} />
                 </div>
-                <p className="text-sm font-bold text-black mb-2">{title}</p>
-                <p className="text-[12px] text-black/45 leading-relaxed">{desc}</p>
+                <p className="text-base font-bold text-black mb-2">{title}</p>
+                <p className="text-sm text-black/45 leading-relaxed">{desc}</p>
               </div>
             ))}
           </div>
@@ -236,7 +333,7 @@ export default function LandingPage() {
           <div className="flex items-end justify-between mb-12">
             <div>
               <p className="text-[10px] font-mono text-black/35 tracking-[0.2em] uppercase mb-1">What We Offer</p>
-              <h2 className="text-2xl font-black text-black tracking-tight uppercase">Our Services</h2>
+              <h2 className="text-3xl font-black text-black tracking-tight uppercase">Our Services</h2>
             </div>
             <div className="text-right hidden md:block">
               <p className="text-[10px] font-mono text-black/25 tracking-wider">ALL WORK INSURED</p>
@@ -264,8 +361,8 @@ export default function LandingPage() {
                   </div>
 
                   <div className="flex-1">
-                    <p className="text-sm font-bold text-black mb-1.5">{name}</p>
-                    <p className="text-[12px] text-black/45 leading-relaxed">{desc}</p>
+                    <p className="text-base font-bold text-black mb-1.5">{name}</p>
+                    <p className="text-sm text-black/45 leading-relaxed">{desc}</p>
                   </div>
 
                   <div className="flex items-center justify-between pt-4 border-t border-black/8">
@@ -276,7 +373,7 @@ export default function LandingPage() {
                       {(id === 'gutter-cleaning' || id === 'window-cleaning' || id === 'pressure-washing') && !disabled && (
                         <Link
                           to={`/services/${id}`}
-                          className="px-3 h-7 border border-black/15 text-[10px] font-bold tracking-[0.12em] uppercase text-black/50 hover:text-black hover:border-black/40 transition-colors"
+                          className="px-3 h-7 flex items-center border border-black/15 text-[10px] font-bold tracking-[0.12em] uppercase text-black/50 hover:text-black hover:border-black/40 transition-colors"
                         >
                           LEARN MORE
                         </Link>
@@ -302,7 +399,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-12">
             <p className="text-[10px] font-mono text-black/35 tracking-[0.2em] uppercase mb-1">The Process</p>
-            <h2 className="text-2xl font-black text-black tracking-tight uppercase">As Easy as Ordering a Ride</h2>
+            <h2 className="text-3xl font-black text-black tracking-tight uppercase">As Easy as Ordering a Ride</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-black/10">
@@ -313,8 +410,8 @@ export default function LandingPage() {
             ].map(({ step, title, desc }) => (
               <div key={step} className="bg-white p-8">
                 <p className="text-[10px] font-mono text-black/25 tracking-[0.2em] mb-4">{step}</p>
-                <p className="text-sm font-bold text-black mb-2">{title}</p>
-                <p className="text-[12px] text-black/45 leading-relaxed">{desc}</p>
+                <p className="text-base font-bold text-black mb-2">{title}</p>
+                <p className="text-sm text-black/45 leading-relaxed">{desc}</p>
               </div>
             ))}
           </div>
@@ -327,7 +424,7 @@ export default function LandingPage() {
           <div className="flex items-end justify-between mb-12">
             <div>
               <p className="text-[10px] font-mono text-white/30 tracking-[0.2em] uppercase mb-1">Homeowner Reviews</p>
-              <h2 className="text-2xl font-black text-white tracking-tight uppercase">What Customers Say</h2>
+              <h2 className="text-3xl font-black text-white tracking-tight uppercase">What Customers Say</h2>
             </div>
             <div className="hidden md:flex items-center gap-1">
               <Star className="w-3.5 h-3.5 text-white/60 fill-white/60" />
@@ -354,7 +451,7 @@ export default function LandingPage() {
                   ))}
                 </div>
 
-                <p className="text-[13px] text-white/55 leading-relaxed italic flex-1">{quote}</p>
+                <p className="text-sm text-white/55 leading-relaxed italic flex-1">{quote}</p>
               </div>
             ))}
           </div>
@@ -365,10 +462,10 @@ export default function LandingPage() {
       <section className="py-24 bg-white border-t border-black/10">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <p className="text-[10px] font-mono text-black/35 tracking-[0.25em] uppercase mb-4">For Students</p>
-          <h2 className="text-3xl font-black text-black tracking-tight uppercase mb-4">
+          <h2 className="text-4xl font-black text-black tracking-tight uppercase mb-4">
             Earn on Your Own Schedule
           </h2>
-          <p className="text-sm text-black/45 max-w-lg mx-auto leading-relaxed mb-10">
+          <p className="text-base text-black/45 max-w-lg mx-auto leading-relaxed mb-10">
             Turn your free time into real income. Set your own hours, pick the jobs you want,
             and build a reputation in your neighborhood. Top earners make over $800/week.
           </p>
@@ -401,7 +498,7 @@ export default function LandingPage() {
                 <span className="text-white text-sm font-bold tracking-[0.15em] uppercase">LINTEL</span>
               </div>
               <p className="text-white/35 text-[12px] leading-relaxed">
-                Home services on demand. Vetted students, insured work, and satisfaction guaranteed — every time.
+                Home services by students. Fully insured, background-checked, and satisfaction guaranteed — every time.
               </p>
             </div>
 

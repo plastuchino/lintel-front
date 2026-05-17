@@ -47,7 +47,7 @@ export default function ServiceWindowCleaning() {
     <div className="min-h-screen bg-white text-black" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
       <Helmet>
         <title>Window Cleaning in Bethesda &amp; Rockville, MD | Lintel</title>
-        <meta name="description" content="Professional window cleaning in Bethesda, Rockville, and Montgomery County, MD. Interior or exterior, streak-free results, fully insured. Starting at $119. Book online." />
+        <meta name="description" content="Professional window cleaning in Bethesda, Rockville, and Montgomery County, MD. Interior or exterior, streak-free results, fully insured. Starting at $250. Book online." />
         <link rel="canonical" href="https://uselintel.pro/services/window-cleaning" />
       </Helmet>
 
@@ -83,7 +83,7 @@ export default function ServiceWindowCleaning() {
             Window Cleaning in<br />Bethesda &amp; Rockville, MD
           </h1>
           <p className="text-sm text-black/55 leading-relaxed max-w-xl mb-8">
-            Streak-free windows, inside or out. We use purified water and professional pole systems — no streaks, no residue, no ladder drama. Book interior, exterior, or both. Starting at $119.
+            Streak-free windows, inside or out. We use purified water and professional pole systems — no streaks, no residue, no ladder drama. Book interior, exterior, or both. Starting at $250.
           </p>
           <button
             onClick={() => navigate('/')}
@@ -143,9 +143,9 @@ export default function ServiceWindowCleaning() {
             <div className="px-5 py-3 text-[11px] font-bold tracking-[0.1em] uppercase">Typical Time</div>
           </div>
           {[
-            ['Exterior only', '$119', '60–90 min'],
-            ['Interior only', '$119', '60–90 min'],
-            ['Exterior + Interior', '$219', '2–3 hrs'],
+            ['Exterior only', '$250', '60–90 min'],
+            ['Interior only', '$250', '60–90 min'],
+            ['Exterior + Interior', '$450', '2–3 hrs'],
           ].map(([service, price, time], i) => (
             <div key={service} className={`grid grid-cols-3 border-t border-black/10 ${i % 2 === 1 ? 'bg-black/[0.02]' : ''}`}>
               <div className="px-5 py-3 text-sm text-black">{service}</div>
@@ -188,12 +188,12 @@ export default function ServiceWindowCleaning() {
           <Link to="/services/gutter-cleaning" className="border border-black/10 p-5 hover:border-black/30 transition-colors">
             <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest mb-1">Service</p>
             <p className="text-sm font-bold text-black">Gutter Cleaning</p>
-            <p className="text-xs text-black/50 mt-1">Ground-level vacuum cleaning. From $89.</p>
+            <p className="text-xs text-black/50 mt-1">Ground-level vacuum cleaning. From $149.</p>
           </Link>
           <Link to="/services/pressure-washing" className="border border-black/10 p-5 hover:border-black/30 transition-colors">
             <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest mb-1">Service</p>
             <p className="text-sm font-bold text-black">Pressure Washing</p>
-            <p className="text-xs text-black/50 mt-1">Driveways, patios, siding & more. From $149.</p>
+            <p className="text-xs text-black/50 mt-1">Driveways, patios, siding & more. From $200.</p>
           </Link>
           <Link to="/blog/window-cleaning-bethesda-md" className="border border-black/10 p-5 hover:border-black/30 transition-colors">
             <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest mb-1">Blog</p>
