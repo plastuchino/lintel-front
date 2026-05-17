@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { HelmetProvider } from 'react-helmet-async';
@@ -67,10 +68,18 @@ function ProtectedRoute({
 
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
+declare function gtag(...args: unknown[]): void;
+
 function Layout({ children }: { children: React.ReactNode }) {
   const { user } = useAuthStore();
   const location = useLocation();
   const isWorkerRoute = location.pathname.startsWith('/worker/');
+
+  useEffect(() => {
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'page_view', { page_path: location.pathname + location.search });
+    }
+  }, [location]);
   return (
     <>
       {isLocalhost && (
