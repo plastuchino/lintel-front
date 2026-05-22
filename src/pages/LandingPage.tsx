@@ -505,7 +505,7 @@ export default function LandingPage() {
             {/* Link columns */}
             <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-8">
               {[
-                { heading: 'SERVICES', links: [['Gutter Cleaning', '/login'], ['Window Cleaning', '/login'], ['Pressure Washing', '/login'], ['House Cleaning', '/login'], ['Lawn Mowing', '/login']] },
+                { heading: 'SERVICES', links: [['Gutter Cleaning', '/services/gutter-cleaning'], ['Window Cleaning', '/services/window-cleaning'], ['Pressure Washing', '/services/pressure-washing'], ['House Cleaning', '/login'], ['Lawn Mowing', '/login']] },
                 { heading: 'HOMEOWNERS', links: [['How It Works', '#trust'], ['Pricing', '/login'], ['Book a Service', '/login'], ['Track Your Job', '/login']] },
                 { heading: 'STUDENTS', links: [['Become a Pro', '/worker/register'], ['How Payouts Work', '/worker/register'], ['Requirements', '/worker/register']] },
                 { heading: 'COMPANY', links: [['Blog', '/blog'], ['Terms of Use', '/terms'], ['Privacy Policy', '/privacy'], ['Support', '/login']] },
