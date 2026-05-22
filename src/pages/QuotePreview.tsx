@@ -54,6 +54,7 @@ export default function QuotePreview() {
   // Turnstile state
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [pendingAddress, setPendingAddress] = useState<string | null>(null);
+  const [pendingCoords, setPendingCoords] = useState<{ lat: number; lng: number } | null>(null);
   const turnstileRef = useRef<TurnstileInstance>(undefined);
 
   // Load service list for card rendering
@@ -93,11 +94,11 @@ export default function QuotePreview() {
     return () => clearInterval(tick);
   }, [phase, expiresAt]);
 
-  const fetchQuote = useCallback(async (addr: string, token: string) => {
+  const fetchQuote = useCallback(async (addr: string, token: string, geocoords?: { lat: number; lng: number } | null) => {
     setPhase('loading');
     setLoadError(null);
     try {
-      const res = await jobs.getQuotePreview(addr, token);
+      const res = await jobs.getQuotePreview(addr, token, geocoords ?? undefined);
       const { quotes: q, lat, lng } = res.data;
       const c = { lat, lng };
       const exp = setPreviewCache(addr, q as Record<ServiceType, number>, c);
@@ -125,18 +126,16 @@ export default function QuotePreview() {
   // Fire API call once we have both address and CAPTCHA token
   useEffect(() => {
     if (pendingAddress && captchaToken) {
-      fetchQuote(pendingAddress, captchaToken);
+      fetchQuote(pendingAddress, captchaToken, pendingCoords);
       setPendingAddress(null);
+      setPendingCoords(null);
     }
-  }, [pendingAddress, captchaToken, fetchQuote]);
+  }, [pendingAddress, captchaToken, pendingCoords, fetchQuote]);
 
   const handleConfirm = async (addr: string) => {
     if (!addr.trim()) return;
     setAddress(addr, true);
     setInputVal(addr);
-
-    // Geocode client-side for MapView preview while loading
-    geocodeAddress(addr).then((c) => { if (c) setCoords(c); });
 
     // Check cache first
     const cached = getPreviewCache(addr);
@@ -150,9 +149,14 @@ export default function QuotePreview() {
       return;
     }
 
+    // Geocode client-side to populate MapView and pass coords to backend
+    setPhase('loading');
+    const clientCoords = await geocodeAddress(addr);
+    if (clientCoords) setCoords(clientCoords);
+    setPendingCoords(clientCoords);
+
     // Need fresh quote — wait for Turnstile token
     setPendingAddress(addr);
-    setPhase('loading');
   };
 
   const handleServiceClick = () => {
@@ -253,6 +257,7 @@ export default function QuotePreview() {
             siteKey={TURNSTILE_SITE_KEY}
             onSuccess={(token) => setCaptchaToken(token)}
             onError={() => { setLoadError('Verification failed. Please try again.'); setPhase('input'); }}
+            onExpire={() => { setLoadError('Verification expired. Please try again.'); setPhase('input'); turnstileRef.current?.reset(); setCaptchaToken(null); }}
             options={{ size: 'invisible' }}
             className="mt-4"
           />
