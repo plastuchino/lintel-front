@@ -11,6 +11,7 @@
     "deploy": "npm run build && aws s3 sync dist/ s3://uselintel-front --delete && aws cloudfront create-invalidation --distribution-id E2VFT3SEA001H1 --paths '/*'"
   },
   "dependencies": {
+    "@marsidev/react-turnstile": "^1.5.2",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.1",

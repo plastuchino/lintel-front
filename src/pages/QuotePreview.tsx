@@ -1,310 +1,429 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Lock, ChevronRight } from 'lucide-react';
+import { CheckCircle, Loader2, ChevronRight, Lock } from 'lucide-react';
+import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile';
 import { useBookingStore } from '../store/bookingStore';
 import { AddressSearch } from '../components/AddressSearch';
+import { MapView } from '../components/MapView';
+import { ServiceCard } from '../components/ServiceCard';
+import { jobs, services } from '../lib/api';
+import type { ServiceType, Service } from '../lib/api';
+import { getPreviewCache, setPreviewCache, clearPreviewCache } from '../lib/previewCache';
 import logo from '../assets/logo.jpeg';
 
-// Prices mirror backend/src/data/services.ts — keep in sync if prices change
-const SERVICES = [
-  {
-    id: 'gutter-cleaning',
-    name: 'Gutter Cleaning',
-    code: 'LNT-001',
-    desc: 'Full gutter clearing, downspout flush, and debris removal.',
-    duration: '2–3 hrs',
-    price: 149,
-  },
-  {
-    id: 'window-cleaning',
-    name: 'Exterior Window Cleaning',
-    code: 'LNT-002',
-    desc: 'Exterior window cleaning with purified water, streak-free finish.',
-    duration: '1–2 hrs',
-    price: 250,
-  },
-  {
-    id: 'window-cleaning-interior',
-    name: 'Interior Window Cleaning',
-    code: 'LNT-003',
-    desc: 'Interior window cleaning, streak-free finish from the inside.',
-    duration: '1–2 hrs',
-    price: 175,
-  },
-  {
-    id: 'pressure-washing',
-    name: 'Pressure Washing',
-    code: 'LNT-004',
-    desc: 'Driveway, walkway, patio, and siding pressure wash.',
-    duration: '2–3 hrs',
-    price: 179,
-  },
-];
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string;
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string;
+const TTL_MS = 30 * 60 * 1000;
 
-const TOTAL = SERVICES.reduce((s, svc) => s + svc.price, 0);
-
-function BlurredPrice({ value }: { value: string }) {
-  return (
-    <span
-      className="font-bold text-black text-sm tracking-wide tabular-nums"
-      style={{ filter: 'blur(5px)', userSelect: 'none' }}
-      aria-hidden="true"
-    >
-      {value}
-    </span>
-  );
+async function geocodeAddress(address: string): Promise<{ lat: number; lng: number } | null> {
+  if (!MAPBOX_TOKEN) return null;
+  try {
+    const res = await fetch(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${MAPBOX_TOKEN}&limit=1`
+    );
+    const data = await res.json();
+    const center = data.features?.[0]?.center as [number, number] | undefined;
+    if (!center) return null;
+    return { lng: center[0], lat: center[1] };
+  } catch {
+    return null;
+  }
 }
 
+function formatCountdown(ms: number): string {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
 
 export default function QuotePreview() {
   const navigate = useNavigate();
-  const { address, setAddress } = useBookingStore();
+  const { address, setAddress, setCoordinates } = useBookingStore();
 
-  const [phase, setPhase] = useState<'input' | 'quote'>(address.trim() ? 'quote' : 'input');
+  const [phase, setPhase] = useState<'input' | 'loading' | 'quote' | 'expired'>('input');
   const [inputVal, setInputVal] = useState(address);
-  // How many service cards have finished "loading"
-  const [loadedCount, setLoadedCount] = useState(0);
-  const [showModal, setShowModal] = useState(false);
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [quotes, setQuotes] = useState<Record<ServiceType, number> | null>(null);
+  const [serviceList, setServiceList] = useState<Service[]>([]);
+  const [expiresAt, setExpiresAt] = useState<number>(0);
+  const [remaining, setRemaining] = useState<number>(TTL_MS);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
-  // All cards show immediately; content resolves after a beat, then modal appears
+  // Turnstile state
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [pendingAddress, setPendingAddress] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileInstance>(undefined);
+
+  // Load service list for card rendering
+  useEffect(() => {
+    services.list().then((r) => setServiceList(r.data)).catch(() => {});
+  }, []);
+
+  // Check sessionStorage cache on mount
+  useEffect(() => {
+    if (!address) return;
+    const cached = getPreviewCache(address);
+    if (cached) {
+      setCoords(cached.coords);
+      setCoordinates(cached.coords);
+      setQuotes(cached.quotes as Record<ServiceType, number>);
+      setExpiresAt(cached.expiresAt);
+      setRemaining(cached.expiresAt - Date.now());
+      setPhase('quote');
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Countdown ticker
   useEffect(() => {
     if (phase !== 'quote') return;
-    setLoadedCount(0);
-    setShowModal(false);
+    const tick = setInterval(() => {
+      const left = expiresAt - Date.now();
+      if (left <= 0) {
+        clearInterval(tick);
+        setRemaining(0);
+        clearPreviewCache();
+        setPhase('expired');
+      } else {
+        setRemaining(left);
+      }
+    }, 1000);
+    return () => clearInterval(tick);
+  }, [phase, expiresAt]);
 
-    const resolveTimer = setTimeout(() => setLoadedCount(SERVICES.length), 1400);
-    const modalTimer  = setTimeout(() => setShowModal(true), 1900);
+  const fetchQuote = useCallback(async (addr: string, token: string) => {
+    setPhase('loading');
+    setLoadError(null);
+    try {
+      const res = await jobs.getQuotePreview(addr, token);
+      const { quotes: q, lat, lng } = res.data;
+      const c = { lat, lng };
+      const exp = setPreviewCache(addr, q as Record<ServiceType, number>, c);
+      setCoords(c);
+      setCoordinates(c);
+      setQuotes(q as Record<ServiceType, number>);
+      setExpiresAt(exp);
+      setRemaining(TTL_MS);
+      setPhase('quote');
+    } catch (err: unknown) {
+      const status = (err as { response?: { status?: number } }).response?.status;
+      if (status === 429) {
+        setLoadError('Too many requests. Please wait before getting another quote.');
+      } else if (status === 400) {
+        setLoadError('Verification failed. Please refresh and try again.');
+      } else {
+        setLoadError('Something went wrong. Please try again.');
+      }
+      setPhase('input');
+      turnstileRef.current?.reset();
+      setCaptchaToken(null);
+    }
+  }, []);
 
-    return () => {
-      clearTimeout(resolveTimer);
-      clearTimeout(modalTimer);
-    };
-  }, [phase]);
+  // Fire API call once we have both address and CAPTCHA token
+  useEffect(() => {
+    if (pendingAddress && captchaToken) {
+      fetchQuote(pendingAddress, captchaToken);
+      setPendingAddress(null);
+    }
+  }, [pendingAddress, captchaToken, fetchQuote]);
 
-  const handleConfirm = (addr: string) => {
+  const handleConfirm = async (addr: string) => {
     if (!addr.trim()) return;
     setAddress(addr, true);
     setInputVal(addr);
-    setPhase('quote');
+
+    // Geocode client-side for MapView preview while loading
+    geocodeAddress(addr).then((c) => { if (c) setCoords(c); });
+
+    // Check cache first
+    const cached = getPreviewCache(addr);
+    if (cached) {
+      setCoords(cached.coords);
+      setCoordinates(cached.coords);
+      setQuotes(cached.quotes as Record<ServiceType, number>);
+      setExpiresAt(cached.expiresAt);
+      setRemaining(cached.expiresAt - Date.now());
+      setPhase('quote');
+      return;
+    }
+
+    // Need fresh quote — wait for Turnstile token
+    setPendingAddress(addr);
+    setPhase('loading');
   };
 
-  const toLogin = () => navigate('/login');
+  const handleServiceClick = () => {
+    setShowLoginModal(true);
+  };
 
-  /* ── Phase: address input ─────────────────────────────────────────── */
-  if (phase === 'input') {
+  const toLogin = () => {
+    // address is already in bookingStore so /book will pre-populate it
+    navigate('/login');
+  };
+
+  const handleRefresh = () => {
+    clearPreviewCache();
+    setQuotes(null);
+    setCaptchaToken(null);
+    setPhase('input');
+    turnstileRef.current?.reset();
+  };
+
+  const progressPct = Math.max(0, Math.min(100, (remaining / TTL_MS) * 100));
+
+  /* ── Address input phase ─────────────────────────────────────────────── */
+  if (phase === 'input' || phase === 'loading') {
     return (
-      <div className="min-h-screen bg-white flex flex-col" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
-        <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-black/10">
-          <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+      <div className="fixed inset-0 flex bg-white" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+        {/* Left panel */}
+        <div className="w-full md:w-[500px] md:flex-shrink-0 overflow-y-auto px-8 py-10 md:border-r border-black/10 flex flex-col">
+          <header className="mb-10 flex items-center justify-between">
             <Link to="/" className="flex items-center gap-2.5">
               <img src={logo} alt="lintel" className="h-7 w-7 rounded-full object-cover" />
               <span className="text-black text-sm font-bold tracking-[0.15em] uppercase">LINTEL</span>
             </Link>
-            <button onClick={toLogin} className="px-4 h-8 flex items-center text-black text-[11px] font-semibold tracking-[0.1em] uppercase hover:bg-black/5 transition-colors">
+            <button
+              onClick={() => navigate('/login')}
+              className="px-4 h-8 flex items-center text-black text-[11px] font-semibold tracking-[0.1em] uppercase hover:bg-black/5 transition-colors"
+            >
               LOG IN
             </button>
+          </header>
+
+          <div className="mb-8">
+            <h1 className="text-4xl font-black text-black leading-tight">
+              Get an instant quote,{' '}
+              <span className="text-uber-gray-400">instantly.</span>
+            </h1>
+            <p className="text-uber-gray-400 text-sm mt-2">No sign-up required to see your price.</p>
           </div>
-        </header>
-        <div className="flex-1 flex items-center justify-center pt-14 px-4">
-          <div className="w-full max-w-md">
-            <div className="border-l-2 border-black pl-4 mb-8">
-              <p className="text-[10px] font-mono text-black/35 tracking-[0.2em] uppercase mb-1">Get instant pricing</p>
-              <h1 className="text-2xl font-black text-black tracking-tight uppercase">Enter your address</h1>
-            </div>
-            <p className="text-sm text-black/50 mb-8 leading-relaxed">
-              We'll generate a custom quote for your property — no signup required to see your estimate.
-            </p>
-            <div className="border border-black/20 bg-white p-4">
-              <p className="text-[10px] font-mono font-semibold text-black/40 tracking-[0.2em] uppercase mb-3">Your Address</p>
+
+          <div className="mb-6">
+            <p className="text-xs font-bold text-uber-gray-400 uppercase tracking-widest mb-2">Service Address</p>
+            <div className="relative">
+              <div className="absolute left-5 top-6 w-2 h-2 rounded-full bg-black z-10 pointer-events-none" />
               <AddressSearch
                 value={inputVal}
                 onChange={setInputVal}
                 onConfirm={handleConfirm}
                 placeholder="Enter your home address…"
+                className="pl-4"
               />
-              <button
-                onClick={() => handleConfirm(inputVal)}
-                disabled={!inputVal.trim()}
-                className="mt-3 w-full h-11 bg-black text-white font-bold text-[11px] tracking-[0.2em] uppercase flex items-center justify-center gap-2 hover:bg-black/80 transition-colors disabled:bg-black/20 disabled:cursor-not-allowed"
-              >
-                GET MY QUOTE
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
             </div>
+            {inputVal && (
+              <div className="flex items-center gap-1.5 mt-2 ml-1">
+                <CheckCircle className="w-3.5 h-3.5 text-uber-green" />
+                <span className="text-xs text-uber-green font-semibold">Address confirmed</span>
+              </div>
+            )}
           </div>
+
+          {loadError && (
+            <p className="text-sm text-red-600 mb-4">{loadError}</p>
+          )}
+
+          {phase === 'loading' && (
+            <div className="mb-6 rounded-xl border border-uber-gray-100 bg-uber-gray-50 overflow-hidden">
+              <div className="flex items-center gap-2.5 px-4 pt-3 pb-2">
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-black flex-shrink-0" />
+                <p className="text-sm font-semibold text-black">
+                  {!captchaToken ? 'Verifying…' : 'Analyzing your property…'}
+                </p>
+              </div>
+              <div className="mx-4 mb-3 h-1 bg-uber-gray-200 rounded-full overflow-hidden">
+                <div className="h-full w-1/3 bg-black rounded-full animate-progress-slide" />
+              </div>
+            </div>
+          )}
+
+          <button
+            onClick={() => handleConfirm(inputVal)}
+            disabled={!inputVal.trim() || phase === 'loading'}
+            className="w-full h-14 bg-black text-white font-bold text-base rounded-xl flex items-center justify-center gap-2 hover:bg-uber-gray-800 transition-colors disabled:bg-uber-gray-200 disabled:text-uber-gray-400 disabled:cursor-not-allowed"
+          >
+            {phase === 'loading' ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Get My Quote <ChevronRight className="w-5 h-5" /></>}
+          </button>
+
+          {/* Turnstile widget — invisible, fires automatically */}
+          <Turnstile
+            ref={turnstileRef}
+            siteKey={TURNSTILE_SITE_KEY}
+            onSuccess={(token) => setCaptchaToken(token)}
+            onError={() => { setLoadError('Verification failed. Please try again.'); setPhase('input'); }}
+            options={{ size: 'invisible' }}
+            className="mt-4"
+          />
+        </div>
+
+        {/* Right panel — MapView */}
+        <div className="hidden md:block flex-1">
+          <MapView coordinates={coords} />
         </div>
       </div>
     );
   }
 
-  /* ── Phase: quote (with staggered lazy load + deferred modal) ─────── */
-  const allLoaded = loadedCount >= SERVICES.length;
-
-  return (
-    <div className="min-h-screen bg-white text-black relative" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
-
-      {/* ── Nav ───────────────────────────────────────────────────────── */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-black/10">
-        <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2.5">
-            <img src={logo} alt="lintel" className="h-7 w-7 rounded-full object-cover" />
-            <span className="text-black text-sm font-bold tracking-[0.15em] uppercase">LINTEL</span>
-          </Link>
-          <div className="flex items-center gap-2">
-            <button onClick={toLogin} className="px-4 h-8 flex items-center text-black text-[11px] font-semibold tracking-[0.1em] uppercase hover:bg-black/5 transition-colors">
-              LOG IN
-            </button>
-            <button onClick={toLogin} className="px-4 h-8 flex items-center bg-black text-white text-[11px] font-semibold tracking-[0.1em] uppercase hover:bg-black/80 transition-colors">
-              SIGN UP
+  /* ── Expired phase ───────────────────────────────────────────────────── */
+  if (phase === 'expired') {
+    return (
+      <div className="fixed inset-0 flex bg-white" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+        <div className="w-full md:w-[500px] md:flex-shrink-0 overflow-y-auto px-8 py-10 md:border-r border-black/10 flex flex-col">
+          <header className="mb-10 flex items-center justify-between">
+            <Link to="/" className="flex items-center gap-2.5">
+              <img src={logo} alt="lintel" className="h-7 w-7 rounded-full object-cover" />
+              <span className="text-black text-sm font-bold tracking-[0.15em] uppercase">LINTEL</span>
+            </Link>
+          </header>
+          <div className="flex-1 flex flex-col items-center justify-center text-center gap-6">
+            <div className="w-14 h-14 rounded-full bg-black/5 flex items-center justify-center">
+              <span className="text-2xl">⏱</span>
+            </div>
+            <div>
+              <h2 className="text-xl font-black text-black mb-2">Your quote has expired</h2>
+              <p className="text-sm text-uber-gray-400">Quotes are valid for 30 minutes. Get a fresh one below.</p>
+            </div>
+            <button
+              onClick={handleRefresh}
+              className="h-12 px-8 bg-black text-white font-bold text-sm rounded-xl hover:bg-uber-gray-800 transition-colors"
+            >
+              Get a new quote
             </button>
           </div>
         </div>
-      </header>
+        <div className="hidden md:block flex-1">
+          <MapView coordinates={coords} />
+        </div>
+      </div>
+    );
+  }
 
-      {/* ── Background content ────────────────────────────────────────── */}
-      <div className={`pt-14 transition-all duration-300 ${showModal ? 'pointer-events-none select-none' : ''}`}>
-        <div className="max-w-7xl mx-auto px-6 py-16 flex flex-col lg:flex-row gap-16 min-h-[calc(100vh-3.5rem)]">
+  /* ── Quote phase ─────────────────────────────────────────────────────── */
+  const quotableServices = serviceList.filter(
+    (s) => !['house-cleaning-standard', 'house-cleaning-deep', 'lawn-mowing'].includes(s.id)
+  );
 
-          {/* ── Left: Quote ─────────────────────────────────────────── */}
-          <div className="flex-1 max-w-lg">
-
-            {/* Header — address is here, NOT blurred */}
-            <div className="border-l-2 border-black pl-4 mb-10">
-              <p className="text-[10px] font-mono text-black/35 tracking-[0.2em] uppercase mb-1">Project at home</p>
-              <h1 className="text-xl font-black text-black tracking-tight uppercase mb-3">Quote Preview</h1>
-              <p className="text-sm font-semibold text-black">{address}</p>
-              <p className="text-[10px] font-mono text-black/35 mt-1">Your property</p>
+  return (
+    <>
+      <div className="fixed inset-0 top-0 flex bg-white" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+        {/* Left panel */}
+        <div className="w-full md:w-[500px] md:flex-shrink-0 overflow-y-auto px-8 py-10 md:border-r border-black/10">
+          <header className="mb-8 flex items-center justify-between">
+            <Link to="/" className="flex items-center gap-2.5">
+              <img src={logo} alt="lintel" className="h-7 w-7 rounded-full object-cover" />
+              <span className="text-black text-sm font-bold tracking-[0.15em] uppercase">LINTEL</span>
+            </Link>
+            <div className="flex items-center gap-2">
+              <button onClick={toLogin} className="px-4 h-8 flex items-center text-black text-[11px] font-semibold tracking-[0.1em] uppercase hover:bg-black/5 transition-colors">
+                LOG IN
+              </button>
+              <button onClick={toLogin} className="px-4 h-8 flex items-center bg-black text-white text-[11px] font-semibold tracking-[0.1em] uppercase hover:bg-black/80 transition-colors">
+                SIGN UP
+              </button>
             </div>
+          </header>
 
-            {/* Service rows — names always visible, desc+price shimmer until resolved */}
-            <div className="border-t border-black/10">
-              {SERVICES.map((svc) => (
-                <div
-                  key={svc.id}
-                  className="group py-5 border-b border-black/10 flex items-start gap-4 px-1 cursor-pointer hover:bg-black/[0.025] transition-colors"
-                >
-                  <div className="mt-0.5 w-4 h-4 flex-shrink-0 border border-black/30 group-hover:border-black transition-colors" />
+          <div className="mb-6">
+            <h1 className="text-4xl font-black text-black leading-tight">
+              What needs work,{' '}
+              <span className="text-uber-gray-400">partner?</span>
+            </h1>
+            <p className="text-uber-gray-400 text-sm mt-1">Book a service with lintel.</p>
+          </div>
 
-                  <div className="flex-1 min-w-0">
-                    {/* Name — always visible */}
-                    <div className="flex items-center gap-2 mb-2">
-                      <p className="text-[11px] font-bold text-black tracking-[0.1em] uppercase">{svc.name}</p>
-                      <span className="text-[9px] font-mono text-black/25 tracking-wider">{svc.code}</span>
-                    </div>
-                    {/* Description — shimmer until resolved */}
-                    {allLoaded ? (
-                      <>
-                        <p className="text-[11px] text-black/45 leading-relaxed mb-1">{svc.desc}</p>
-                        <p className="text-[10px] font-mono text-black/30 tracking-wider">{svc.duration}</p>
-                      </>
-                    ) : (
-                      <div className="space-y-2">
-                        <div className="skeleton-shimmer h-3 w-56 rounded-sm" />
-                        <div className="skeleton-shimmer h-2.5 w-24 rounded-sm" />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Price — shimmer until resolved */}
-                  <div className="flex flex-col items-end gap-1 flex-shrink-0 mt-0.5">
-                    {allLoaded ? (
-                      <>
-                        <BlurredPrice value={`$${svc.price}.00`} />
-                        <span className="text-[9px] font-mono text-black/25 uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">
-                          Select
-                        </span>
-                      </>
-                    ) : (
-                      <div className="skeleton-shimmer h-4 w-20 rounded-sm" />
-                    )}
-                  </div>
-                </div>
-              ))}
+          <div className="mb-6">
+            <p className="text-xs font-bold text-uber-gray-400 uppercase tracking-widest mb-1">Service Address</p>
+            <div className="flex items-center gap-2 px-4 py-3 border border-uber-gray-100 rounded-xl bg-uber-gray-50">
+              <div className="w-2 h-2 rounded-full bg-black flex-shrink-0" />
+              <p className="text-sm font-medium text-black truncate">{address}</p>
             </div>
-
-            {/* Total — shimmer until resolved */}
-            <div className="pt-5 px-1 flex items-start justify-between">
-              <div>
-                <p className="text-[11px] font-bold text-black tracking-[0.1em] uppercase">Total Est.</p>
-                <p className="text-[10px] font-mono text-black/30 mt-0.5 max-w-[200px] leading-relaxed">
-                  Calculated based on property and selected services
-                </p>
-              </div>
-              {allLoaded ? (
-                <BlurredPrice value={`$${TOTAL}.00`} />
-              ) : (
-                <div className="skeleton-shimmer h-4 w-24 rounded-sm mt-0.5" />
-              )}
+            <div className="flex items-center gap-1.5 mt-1.5 ml-1">
+              <CheckCircle className="w-3.5 h-3.5 text-uber-green" />
+              <span className="text-xs text-uber-green font-semibold">Address confirmed</span>
             </div>
           </div>
 
-          {/* ── Right: Property visual ─────────────────────────────── */}
-          <div className="flex-1 flex justify-center lg:justify-end items-start pt-4 opacity-[0.12]">
-            <PropertyVisual />
+          {/* Countdown timer */}
+          <div className="mb-6 rounded-xl border border-uber-gray-100 bg-uber-gray-50 px-4 py-3">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs font-bold text-uber-gray-400 uppercase tracking-widest">Quote valid for</p>
+              <p className="text-sm font-bold text-black tabular-nums">{formatCountdown(remaining)}</p>
+            </div>
+            <div className="h-1 bg-uber-gray-200 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-black rounded-full transition-all duration-1000"
+                style={{ width: `${progressPct}%` }}
+              />
+            </div>
+            <p className="text-[11px] text-uber-gray-400 mt-1.5">Log in to book before this price expires.</p>
           </div>
+
+          {/* Service list */}
+          <div className="mb-4">
+            <p className="text-xs font-bold text-uber-gray-400 uppercase tracking-widest mb-3">Choose services</p>
+            <div className="space-y-2">
+              {quotableServices.map((svc) => {
+                const price = quotes?.[svc.id] ?? svc.price;
+                return (
+                  <ServiceCard
+                    key={svc.id}
+                    service={{ ...svc, price }}
+                    selected={false}
+                    onClick={handleServiceClick}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Right panel — satellite map */}
+        <div className="hidden md:block flex-1">
+          <MapView coordinates={coords} />
         </div>
       </div>
 
-      {/* ── Login-gate modal (appears after all cards load) ───────────── */}
-      {showModal && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center px-4">
-          <div className="absolute inset-0 bg-white/65 backdrop-blur-[2px]" />
-          <div className="relative z-10 bg-white border border-black/12 shadow-2xl w-full max-w-sm mx-auto p-8 flex flex-col items-center gap-6">
-            {/* Lock */}
-            <div className="w-14 h-14 bg-black flex items-center justify-center">
+      {/* Login modal */}
+      {showLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setShowLoginModal(false)} />
+          <div className="relative z-10 bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 flex flex-col items-center gap-6">
+            <div className="w-14 h-14 bg-black rounded-xl flex items-center justify-center">
               <Lock className="w-6 h-6 text-white" strokeWidth={1.5} />
             </div>
-
-            {/* Headline */}
             <div className="text-center">
-              <h2 className="text-sm font-black text-black tracking-[0.08em] uppercase mb-3">
-                Log in to see your custom quote
-              </h2>
-              <p className="text-[12px] text-black/50 leading-relaxed">
-                Please take a moment to quickly log in or sign up so we can show you your
-                precision quote options.
+              <h2 className="text-lg font-black text-black mb-2">Log in to book</h2>
+              <p className="text-sm text-uber-gray-400 leading-relaxed">
+                Your quote is ready. Log in or create an account to confirm your booking at this price.
               </p>
             </div>
-
-            {/* CTAs */}
             <div className="w-full flex flex-col gap-3">
               <button
                 onClick={toLogin}
-                className="w-full h-12 bg-black text-white text-[11px] font-bold tracking-[0.15em] uppercase flex items-center justify-center gap-2.5 hover:bg-black/80 transition-colors"
+                className="w-full h-12 bg-black text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2.5 hover:bg-uber-gray-800 transition-colors"
               >
                 <GoogleG />
                 Continue with Google
               </button>
-
-              <div className="flex items-center gap-3">
-                <div className="flex-1 h-px bg-black/10" />
-                <span className="text-[10px] font-mono text-black/30 tracking-[0.15em]">OR</span>
-                <div className="flex-1 h-px bg-black/10" />
-              </div>
-
               <button
                 onClick={toLogin}
-                className="w-full h-12 border border-black/25 text-black text-[11px] font-bold tracking-[0.15em] uppercase flex items-center justify-center hover:border-black transition-colors"
+                className="w-full h-12 border-2 border-black/20 text-black font-bold text-sm rounded-xl hover:border-black transition-colors"
               >
                 Create an account
               </button>
             </div>
-
-            {/* Fine print */}
-            <p className="text-[10px] text-black/30 text-center leading-relaxed font-mono">
-              By continuing, you agree to Lintel's{' '}
-              <button onClick={toLogin} className="underline underline-offset-2">Terms of Service</button>
-              {' '}and{' '}
-              <button onClick={toLogin} className="underline underline-offset-2">Privacy Policy</button>.
-            </p>
+            <button onClick={() => setShowLoginModal(false)} className="text-xs text-uber-gray-400 hover:text-black transition-colors">
+              Back to quote
+            </button>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 
-/* ── Google G ─────────────────────────────────────────────────────────────── */
 function GoogleG() {
   return (
     <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
@@ -313,40 +432,5 @@ function GoogleG() {
       <path fill="#fff" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" />
       <path fill="#fff" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z" />
     </svg>
-  );
-}
-
-/* ── Property visual ──────────────────────────────────────────────────────── */
-function PropertyVisual() {
-  return (
-    <div className="relative w-full max-w-[500px]">
-      <svg viewBox="0 0 500 370" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-        {Array.from({ length: 14 }).map((_, i) => (
-          <line key={`h${i}`} x1="0" y1={i * 28} x2="500" y2={i * 28} stroke="#000" strokeWidth="0.4" opacity="0.3" />
-        ))}
-        {Array.from({ length: 18 }).map((_, i) => (
-          <line key={`v${i}`} x1={i * 28} y1="0" x2={i * 28} y2="370" stroke="#000" strokeWidth="0.4" opacity="0.3" />
-        ))}
-        <line x1="30" y1="300" x2="470" y2="300" stroke="#000" strokeWidth="0.8" opacity="0.6" />
-        <rect x="120" y="170" width="260" height="130" fill="none" stroke="#000" strokeWidth="1.3" opacity="0.8" />
-        <polyline points="100,172 250,70 400,172" fill="none" stroke="#000" strokeWidth="1.3" opacity="0.8" />
-        <line x1="100" y1="172" x2="400" y2="172" stroke="#000" strokeWidth="0.7" opacity="0.4" />
-        <rect x="300" y="90" width="22" height="50" fill="none" stroke="#000" strokeWidth="1" opacity="0.5" />
-        <rect x="218" y="232" width="64" height="68" fill="none" stroke="#000" strokeWidth="1" opacity="0.7" />
-        <line x1="250" y1="232" x2="250" y2="300" stroke="#000" strokeWidth="0.5" opacity="0.4" />
-        <circle cx="262" cy="268" r="2.5" fill="#000" opacity="0.5" />
-        <rect x="138" y="192" width="52" height="44" fill="none" stroke="#000" strokeWidth="1" opacity="0.6" />
-        <line x1="164" y1="192" x2="164" y2="236" stroke="#000" strokeWidth="0.5" opacity="0.3" />
-        <line x1="138" y1="214" x2="190" y2="214" stroke="#000" strokeWidth="0.5" opacity="0.3" />
-        <rect x="310" y="192" width="52" height="44" fill="none" stroke="#000" strokeWidth="1" opacity="0.6" />
-        <line x1="336" y1="192" x2="336" y2="236" stroke="#000" strokeWidth="0.5" opacity="0.3" />
-        <line x1="310" y1="214" x2="362" y2="214" stroke="#000" strokeWidth="0.5" opacity="0.3" />
-        <line x1="72" y1="300" x2="72" y2="214" stroke="#000" strokeWidth="1" opacity="0.35" />
-        <ellipse cx="72" cy="196" rx="28" ry="36" fill="none" stroke="#000" strokeWidth="1" opacity="0.35" />
-        <line x1="430" y1="300" x2="430" y2="206" stroke="#000" strokeWidth="1" opacity="0.35" />
-        <ellipse cx="430" cy="188" rx="28" ry="36" fill="none" stroke="#000" strokeWidth="1" opacity="0.35" />
-        <text x="250" y="338" fontFamily="monospace" fontSize="7.5" fill="#000" opacity="0.4" textAnchor="middle">STRUCTURAL ANALYSIS</text>
-      </svg>
-    </div>
   );
 }

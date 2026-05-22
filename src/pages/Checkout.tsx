@@ -58,7 +58,7 @@ export default function Checkout() {
   const navigate = useNavigate();
   const {
     selectedServices, confirmedAddress, notes, promoCode, scheduledAt,
-    setNotes, setPromoCode, setScheduledAt, setCurrentJobId, reset,
+    setNotes, setPromoCode, setScheduledAt, setCurrentJobId,
     quotes, quotesReady,
   } = useBookingStore();
 
@@ -153,8 +153,20 @@ export default function Checkout() {
           ? `${selectedServices.length} services booked — we're finding a pro for you.`
           : "We're finding a pro for you.",
       });
-      reset();
-      navigate(`/jobs/${jobId}?serviceType=${jobServiceType}`);
+
+      const confirmationState = {
+        jobId,
+        services: selectedServiceObjects.map((s) => ({
+          name: s.name,
+          price: hasBundle ? priceFor(s) * (1 - BUNDLE_DISCOUNT) : priceFor(s),
+        })),
+        address: confirmedAddress,
+        scheduledAt: scheduledAt ?? null,
+        notes: notes || '',
+        hasBundle,
+      };
+
+      navigate('/booking-confirmation', { state: confirmationState });
     } finally {
       setCreating(false);
     }

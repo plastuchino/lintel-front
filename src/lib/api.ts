@@ -104,6 +104,8 @@ export interface SavedCard {
 }
 
 export const jobs = {
+  getQuotePreview: (address: string, captchaToken: string) =>
+    api.post<{ quotes: Record<ServiceType, number>; lat: number; lng: number }>('/jobs/quote/preview', { address, captchaToken }),
   getQuote: (address: string, serviceTypes: ServiceType[]) =>
     api.post<{ quotes: Record<ServiceType, number> }>('/jobs/quote', { address, serviceTypes }),
   create: (data: {

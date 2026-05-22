@@ -23,6 +23,7 @@ import BlogPost from './pages/BlogPost';
 import NotFound from './pages/NotFound';
 import AdminDashboard from './pages/AdminDashboard';
 import QuotePreview from './pages/QuotePreview';
+import BookingConfirmation from './pages/BookingConfirmation';
 import ServiceGutterCleaning from './pages/ServiceGutterCleaning';
 import ServicePressureWashing from './pages/ServicePressureWashing';
 import ServiceWindowCleaning from './pages/ServiceWindowCleaning';
@@ -111,10 +112,11 @@ export default function App() {
               <Route path="/services/gutter-cleaning"  element={<ServiceGutterCleaning />} />
               <Route path="/services/pressure-washing" element={<ServicePressureWashing />} />
               <Route path="/services/window-cleaning"  element={<ServiceWindowCleaning />} />
-              <Route path="/quote-preview" element={<PublicRoute><QuotePreview /></PublicRoute>} />
+              <Route path="/quote-preview" element={<QuotePreview />} />
 
               <Route path="/book" element={<ProtectedRoute><Home /></ProtectedRoute>} />
               <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+              <Route path="/booking-confirmation" element={<ProtectedRoute><BookingConfirmation /></ProtectedRoute>} />
               <Route path="/jobs" element={<ProtectedRoute><JobsList /></ProtectedRoute>} />
               <Route path="/jobs/:id" element={<ProtectedRoute><JobTracking /></ProtectedRoute>} />
               <Route path="/worker/dashboard" element={<ProtectedRoute workerOnly requireApproved><WorkerDashboard /></ProtectedRoute>} />
