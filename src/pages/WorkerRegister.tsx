@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { Loader2, ExternalLink, CheckCircle } from 'lucide-react';
@@ -11,11 +11,22 @@ export default function WorkerRegister() {
   const navigate = useNavigate();
   const { setAuth } = useAuthStore();
   const [step, setStep] = useState<'info' | 'stripe'>('info');
+  const googleContainerRef = useRef<HTMLDivElement>(null);
+  const [googleBtnWidth, setGoogleBtnWidth] = useState(360);
   const [name, setName] = useState('');
   const [bio, setBio] = useState('');
   const [idToken, setIdToken] = useState('');
   const [stripeUrl, setStripeUrl] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const el = googleContainerRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(() => setGoogleBtnWidth(el.clientWidth));
+    observer.observe(el);
+    setGoogleBtnWidth(el.clientWidth);
+    return () => observer.disconnect();
+  }, []);
 
   const handleGoogleSuccess = (cred: { credential?: string }) => {
     if (!cred.credential) return;
@@ -97,14 +108,16 @@ export default function WorkerRegister() {
                 <span className="text-sm font-semibold text-black">Google account connected</span>
               </div>
             ) : (
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={() => toast({ title: 'Sign-in failed', variant: 'destructive' })}
-                theme="outline"
-                shape="rectangular"
-                size="large"
-                width="360"
-              />
+              <div ref={googleContainerRef} className="w-full">
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => toast({ title: 'Sign-in failed', variant: 'destructive' })}
+                  theme="outline"
+                  shape="rectangular"
+                  size="large"
+                  width={googleBtnWidth}
+                />
+              </div>
             )}
           </div>
 

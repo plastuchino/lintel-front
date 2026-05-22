@@ -100,12 +100,13 @@ export default function LandingPage() {
       <header className="fixed top-0 left-0 right-0 z-50">
         {/* Announcement banner */}
         <div className="bg-[#008060]">
-          <div className="h-9 flex items-center justify-center px-6 gap-3">
-            <div className="w-1 h-1 bg-white/50 rounded-full flex-shrink-0" />
-            <span className="text-white text-[10px] font-semibold tracking-[0.2em] uppercase font-mono text-center">
-              Home Services by Students · Montgomery County, MD · Fully Insured
+          <div className="min-h-9 flex items-center justify-center px-4 py-1.5 gap-2">
+            <div className="w-1 h-1 bg-white/50 rounded-full flex-shrink-0 hidden sm:block" />
+            <span className="text-white text-[9px] sm:text-[10px] font-semibold tracking-[0.15em] sm:tracking-[0.2em] uppercase font-mono text-center leading-tight">
+              <span className="sm:hidden">Home Services by Students · MD · Fully Insured</span>
+              <span className="hidden sm:inline">Home Services by Students · Montgomery County, MD · Fully Insured</span>
             </span>
-            <div className="w-1 h-1 bg-white/50 rounded-full flex-shrink-0" />
+            <div className="w-1 h-1 bg-white/50 rounded-full flex-shrink-0 hidden sm:block" />
           </div>
         </div>
         {/* Nav bar */}

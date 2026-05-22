@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuthStore } from '../store/authStore';
@@ -9,10 +9,21 @@ import logo from '../assets/logo.jpeg';
 export default function Login() {
   const navigate = useNavigate();
   const { setAuth, user } = useAuthStore();
+  const googleContainerRef = useRef<HTMLDivElement>(null);
+  const [googleBtnWidth, setGoogleBtnWidth] = useState(360);
 
   useEffect(() => {
     if (user) navigate(user.role === 'worker' ? '/worker/dashboard' : '/book');
   }, [user, navigate]);
+
+  useEffect(() => {
+    const el = googleContainerRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(() => setGoogleBtnWidth(el.clientWidth));
+    observer.observe(el);
+    setGoogleBtnWidth(el.clientWidth);
+    return () => observer.disconnect();
+  }, []);
 
   const handleGoogleSuccess = async (credentialResponse: { credential?: string }) => {
     if (!credentialResponse.credential) return;
@@ -66,15 +77,17 @@ export default function Login() {
         <h2 className="text-3xl font-black text-black mb-2">Sign in</h2>
         <p className="text-uber-gray-500 mb-10">Continue with your Google account to book home services.</p>
 
-        <GoogleLogin
-          onSuccess={handleGoogleSuccess}
-          onError={() => toast({ title: 'Sign-in failed', variant: 'destructive' })}
-          theme="outline"
-          shape="rectangular"
-          size="large"
-          width="360"
-          text="continue_with"
-        />
+        <div ref={googleContainerRef} className="w-full">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => toast({ title: 'Sign-in failed', variant: 'destructive' })}
+            theme="outline"
+            shape="rectangular"
+            size="large"
+            width={googleBtnWidth}
+            text="continue_with"
+          />
+        </div>
 
         <div className="flex items-center gap-4 my-8">
           <div className="flex-1 h-px bg-uber-gray-200" />
