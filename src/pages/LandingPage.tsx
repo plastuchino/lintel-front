@@ -162,8 +162,7 @@ export default function LandingPage() {
             </h1>
 
             <p className="text-base text-black/50 leading-relaxed mb-10 max-w-sm">
-              We're a team of high school students from Montgomery County. We take this seriously —
-              every job is insured, every worker is background-checked, and you only pay once you're satisfied.
+              We're a team of dedicated high school students that deliver professional results at low prices. <p className='font-bold'>Don't believe me? Find out your quote below.</p>
             </p>
 
             {/* Address input */}
@@ -228,7 +227,7 @@ export default function LandingPage() {
             <p className="text-[10px] font-mono text-black/35 tracking-[0.2em] uppercase mb-1">Who We Are</p>
             <h2 className="text-3xl font-black text-black tracking-tight uppercase">Students Doing Serious Work</h2>
             <p className="text-base text-black/45 max-w-lg mt-3 leading-relaxed">
-              We're not a faceless company. We're your neighbors — high school students who show up,
+              We're not a faceless company. We're your neighbors, high school students who show up,
               do the job right, and stand behind our work with a $1M insurance policy.
             </p>
           </div>
@@ -488,51 +487,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Footer ──────────────────────────────────────────────────────── */}
-      <footer className="bg-black border-t border-white/10 py-16">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row gap-12 mb-14">
-            {/* Brand */}
-            <div className="md:w-56">
-              <div className="flex items-center gap-2.5 mb-4">
-                <img src={logo} alt="lintel" className="h-7 w-7 rounded-full object-cover" />
-                <span className="text-white text-sm font-bold tracking-[0.15em] uppercase">LINTEL</span>
-              </div>
-              <p className="text-white/35 text-[12px] leading-relaxed">
-                Home services by students. Fully insured, background-checked, and satisfaction guaranteed — every time.
-              </p>
-            </div>
-
-            {/* Link columns */}
-            <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-8">
-              {[
-                { heading: 'SERVICES', links: [['Gutter Cleaning', '/services/gutter-cleaning'], ['Window Cleaning', '/services/window-cleaning'], ['Pressure Washing', '/services/pressure-washing'], ['House Cleaning', '/login'], ['Lawn Mowing', '/login']] },
-                { heading: 'HOMEOWNERS', links: [['How It Works', '#trust'], ['Pricing', '/login'], ['Book a Service', '/login'], ['Track Your Job', '/login']] },
-                { heading: 'STUDENTS', links: [['Become a Pro', '/worker/register'], ['How Payouts Work', '/worker/register'], ['Requirements', '/worker/register']] },
-                { heading: 'COMPANY', links: [['Blog', '/blog'], ['Terms of Use', '/terms'], ['Privacy Policy', '/privacy'], ['Support', '/login']] },
-              ].map(({ heading, links }) => (
-                <div key={heading}>
-                  <p className="text-white/40 text-[10px] font-semibold tracking-[0.2em] uppercase mb-4 font-mono">{heading}</p>
-                  <div className="space-y-2.5">
-                    {links.map(([label, href]) => (
-                      href.startsWith('/') ? (
-                        <Link key={label} to={href} className="block text-white/35 text-[12px] hover:text-white/70 transition-colors">{label}</Link>
-                      ) : (
-                        <a key={label} href={href} className="block text-white/35 text-[12px] hover:text-white/70 transition-colors">{label}</a>
-                      )
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="pt-6 border-t border-white/8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <p className="text-white/20 text-[11px] font-mono">© 2026 LINTEL · ALL RIGHTS RESERVED</p>
-            <p className="text-white/15 text-[11px] font-mono">INSURED · BACKGROUND CHECKED · 4.9★ NETWORK</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

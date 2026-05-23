@@ -219,22 +219,6 @@ export default function ServicePressureWashing() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-black border-t border-white/10 py-10">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <Link to="/" className="flex items-center gap-2">
-            <img src={logo} alt="lintel" className="h-6 w-6 rounded-full object-cover" />
-            <span className="text-white text-sm font-black tracking-tight">lintel</span>
-          </Link>
-          <div className="flex gap-6 text-[11px] font-mono text-white/40">
-            <Link to="/services/gutter-cleaning"  className="hover:text-white transition-colors">Gutter Cleaning</Link>
-            <Link to="/services/pressure-washing" className="hover:text-white transition-colors">Pressure Washing</Link>
-            <Link to="/services/window-cleaning"  className="hover:text-white transition-colors">Window Cleaning</Link>
-            <Link to="/blog"                       className="hover:text-white transition-colors">Blog</Link>
-          </div>
-          <p className="text-white/25 text-[11px] font-mono">© 2026 lintel</p>
-        </div>
-      </footer>
     </div>
   );
 }

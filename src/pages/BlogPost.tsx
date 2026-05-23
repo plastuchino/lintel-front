@@ -187,42 +187,6 @@ export default function BlogPost() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="bg-black border-t border-white/10 py-12 mt-8">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-start justify-between gap-8 mb-10">
-            <div>
-              <div className="flex items-center gap-2.5 mb-4">
-                <img src={logo} alt="lintel" className="h-8 w-8 rounded-full object-cover" />
-                <span className="text-white text-xl font-black">lintel</span>
-              </div>
-              <p className="text-uber-gray-500 text-sm max-w-xs">
-                Home services, on demand. Trusted professionals for every home need.
-              </p>
-            </div>
-            <div className="flex gap-16">
-              <div>
-                <p className="text-white text-sm font-bold mb-3">Company</p>
-                <div className="space-y-2">
-                  <Link to="/terms"   className="block text-uber-gray-500 text-sm hover:text-white transition-colors">Terms</Link>
-                  <Link to="/privacy" className="block text-uber-gray-500 text-sm hover:text-white transition-colors">Privacy</Link>
-                  <Link to="/blog"    className="block text-uber-gray-500 text-sm hover:text-white transition-colors">Blog</Link>
-                </div>
-              </div>
-              <div>
-                <p className="text-white text-sm font-bold mb-3">Services</p>
-                <div className="space-y-2">
-                  <Link to="/login"           className="block text-uber-gray-500 text-sm hover:text-white transition-colors">Book a service</Link>
-                  <Link to="/worker/register" className="block text-uber-gray-500 text-sm hover:text-white transition-colors">Become a pro</Link>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="pt-6 border-t border-white/10">
-            <p className="text-uber-gray-600 text-sm">© 2026 lintel. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

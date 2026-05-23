@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { HelmetProvider } from 'react-helmet-async';
 import { Header } from './components/Header';
+import { Footer } from './components/Footer';
 import { Toaster } from './components/Toaster';
 import { useAuthStore } from './store/authStore';
 import LandingPage from './pages/LandingPage';
@@ -77,6 +78,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   const isWorkerRoute = location.pathname.startsWith('/worker/');
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
     if (typeof gtag !== 'undefined') {
       gtag('event', 'page_view', { page_path: location.pathname + location.search });
     }
@@ -90,6 +92,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       )}
       {user && !isWorkerRoute && <Header />}
       {children}
+      {!user && !isWorkerRoute && <Footer />}
     </>
   );
 }

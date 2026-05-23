@@ -199,8 +199,8 @@ export default function QuotePreview() {
 
           <div className="mb-8">
             <h1 className="text-4xl font-black text-black leading-tight">
-              Get an instant quote,{' '}
-              <span className="text-uber-gray-400">instantly.</span>
+              Get your instant quote,{' '}
+              <span className="text-uber-gray-400">today.</span>
             </h1>
             <p className="text-uber-gray-400 text-sm mt-2">No sign-up required to see your price.</p>
           </div>
