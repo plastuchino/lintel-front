@@ -2,8 +2,11 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Shield, Clock, CheckCircle, ChevronRight, ArrowRight, Star } from 'lucide-react';
+import { Turnstile } from '@marsidev/react-turnstile';
 import { useAuthStore } from '../store/authStore';
 import { useBookingStore } from '../store/bookingStore';
+
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string;
 
 import { AddressSearch } from '../components/AddressSearch';
 import logo from '../assets/logo.jpeg';
@@ -76,7 +79,7 @@ const TEAM = [
 export default function LandingPage() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
-  const { setAddress } = useBookingStore();
+  const { setAddress, setCaptchaToken } = useBookingStore();
   const [heroAddress, setHeroAddress] = useState('');
 
   useEffect(() => {
@@ -487,6 +490,15 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Pre-warm Turnstile token silently so /quote has it ready immediately */}
+      <Turnstile
+        siteKey={TURNSTILE_SITE_KEY}
+        onSuccess={(token) => setCaptchaToken(token)}
+        onError={() => { /* silent — QuotePreview falls back to its own widget */ }}
+        onExpire={() => { /* silent */ }}
+        options={{ size: 'invisible' }}
+        style={{ display: 'none' }}
+      />
     </div>
   );
 }

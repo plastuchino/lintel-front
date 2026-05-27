@@ -39,7 +39,12 @@ function formatCountdown(ms: number): string {
 
 export default function QuotePreview() {
   const navigate = useNavigate();
-  const { address, setAddress, setCoordinates } = useBookingStore();
+  const {
+    address, setAddress, setCoordinates,
+    captchaToken: prewarmedToken,
+    captchaTokenAt: prewarmedTokenAt,
+    clearCaptchaToken,
+  } = useBookingStore();
 
   const [phase, setPhase] = useState<'input' | 'loading' | 'quote' | 'expired'>('input');
   const [inputVal, setInputVal] = useState(address);
@@ -155,7 +160,16 @@ export default function QuotePreview() {
     if (clientCoords) setCoords(clientCoords);
     setPendingCoords(clientCoords);
 
-    // Need fresh quote — wait for Turnstile token
+    // Use pre-warmed token from landing page if fresh (< 4 min old)
+    const FOUR_MIN_MS = 4 * 60 * 1000;
+    if (prewarmedToken && prewarmedTokenAt && Date.now() - prewarmedTokenAt < FOUR_MIN_MS) {
+      clearCaptchaToken();
+      setCaptchaToken(prewarmedToken);
+      setPendingAddress(addr);
+      return;
+    }
+
+    // No fresh pre-warmed token — wait for in-page Turnstile widget
     setPendingAddress(addr);
   };
 

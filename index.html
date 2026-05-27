@@ -77,7 +77,12 @@
       gtag('js', new Date());
       gtag('config', 'G-ER48BXQJVF');
       gtag('config', 'AW-18013706017');
+      gtag('config', 'AW-18193036616');
     </script>
+
+    <!-- Cloudflare Turnstile — preload so script is ready before React mounts -->
+    <link rel="preconnect" href="https://challenges.cloudflare.com" />
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
