@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft, CheckCircle, Loader2, KeyRound, AlertTriangle, Calendar, FileText, Clock, ShieldCheck } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { jobs } from '../lib/api';
+import { jobs, plans } from '../lib/api';
 import type { ServiceType } from '../lib/api';
+import { FrequencySelector } from '../components/FrequencySelector';
 import { useAuthStore } from '../store/authStore';
 import { Layers } from 'lucide-react';
 import { TipModal } from '../components/TipModal';
@@ -42,6 +43,9 @@ export default function JobTracking() {
   const [showRating, setShowRating] = useState(false);
   const [showDispute, setShowDispute] = useState(false);
   const [statement, setStatement] = useState('');
+  const [showRecurringPrompt, setShowRecurringPrompt] = useState(false);
+  const [recurringInterval, setRecurringInterval] = useState<null | 3 | 6 | 12>(null);
+  const [planCreated, setPlanCreated] = useState(false);
 
   const { data: job, isLoading } = useQuery({
     queryKey: ['job', id, serviceType],
@@ -90,6 +94,27 @@ export default function JobTracking() {
   const handleTipComplete = () => {
     setShowTip(false);
     queryClient.invalidateQueries({ queryKey: ['job', id, serviceType] });
+    // Only offer recurring for single-service jobs
+    if (serviceType !== 'bundle') {
+      setShowRecurringPrompt(true);
+    }
+  };
+
+  const handleCreatePlan = async () => {
+    if (!recurringInterval || !job || serviceType === 'bundle') return;
+    try {
+      await plans.create({
+        serviceType: serviceType as ServiceType,
+        address: job.address,
+        intervalMonths: recurringInterval,
+        basePrice: job.price,
+        notes: job.notes,
+      });
+      setPlanCreated(true);
+      toast({ title: 'Recurring plan created!', description: `We'll automatically book your next ${serviceType.replace(/-/g, ' ')} in ${recurringInterval} months.` });
+    } catch {
+      toast({ title: 'Failed to create plan', variant: 'destructive' });
+    }
   };
 
   if (isLoading) return (
@@ -411,6 +436,58 @@ export default function JobTracking() {
       )}
 
       {showDispute && <DisputeModal jobId={id!} serviceType={serviceType} onClose={() => setShowDispute(false)} />}
+
+      {/* Recurring plan prompt — shown after tip/rating flow completes */}
+      {showRecurringPrompt && !planCreated && serviceType !== 'bundle' && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-5">
+            <div>
+              <p className="font-black text-xl text-black mb-1">Set up recurring service</p>
+              <p className="text-sm text-uber-gray-500">Save up to 25% and never think about booking again.</p>
+            </div>
+
+            <FrequencySelector
+              basePrice={job.price}
+              value={recurringInterval}
+              onChange={setRecurringInterval}
+            />
+
+            <div className="flex gap-3 pt-1">
+              <button
+                onClick={handleCreatePlan}
+                disabled={!recurringInterval}
+                className="flex-1 h-12 bg-black text-white font-bold rounded-xl hover:bg-uber-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Set Up Plan
+              </button>
+              <button
+                onClick={() => setShowRecurringPrompt(false)}
+                className="flex-1 h-12 border border-uber-gray-200 text-uber-gray-600 font-semibold rounded-xl hover:bg-uber-gray-50 transition-colors"
+              >
+                No thanks
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showRecurringPrompt && planCreated && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 text-center space-y-4">
+            <CheckCircle className="w-12 h-12 text-uber-green mx-auto" />
+            <div>
+              <p className="font-black text-xl text-black mb-1">Plan created!</p>
+              <p className="text-sm text-uber-gray-500">We'll automatically schedule your next service and notify you when it's booked.</p>
+            </div>
+            <button
+              onClick={() => setShowRecurringPrompt(false)}
+              className="w-full h-12 bg-black text-white font-bold rounded-xl hover:bg-uber-gray-800 transition-colors"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -16,12 +16,13 @@ interface PaymentPanelProps {
   amount: number;
   label: string;
   loading?: boolean;
+  disabled?: boolean;
   // undefined = charge saved card server-side; string = new card paymentMethodId
   onPay: (paymentMethodId?: string) => Promise<void>;
   onError: (error: string) => void;
 }
 
-export function PaymentPanel({ amount, label, loading, onPay, onError }: PaymentPanelProps) {
+export function PaymentPanel({ amount, label, loading, disabled, onPay, onError }: PaymentPanelProps) {
   const [useNewCard, setUseNewCard] = useState(false);
   const [paying, setPaying] = useState(false);
 
@@ -33,6 +34,7 @@ export function PaymentPanel({ amount, label, loading, onPay, onError }: Payment
   const savedCard: SavedCard | null = savedCardData ?? null;
   const showForm = useNewCard || !savedCard;
   const isLoading = loading || paying;
+  const isDisabled = isLoading || disabled;
 
   const call = async (paymentMethodId?: string) => {
     setPaying(true);
@@ -67,7 +69,7 @@ export function PaymentPanel({ amount, label, loading, onPay, onError }: Payment
         </div>
         <button
           onClick={() => call()}
-          disabled={isLoading}
+          disabled={isDisabled}
           className="w-full h-14 bg-black text-white font-bold text-base rounded-xl flex items-center justify-center hover:bg-uber-gray-800 transition-colors disabled:bg-uber-gray-200 disabled:text-uber-gray-400 disabled:cursor-not-allowed"
         >
           {isLoading ? 'Processing...' : label}

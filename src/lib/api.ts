@@ -115,6 +115,7 @@ export const jobs = {
     notes?: string;
     promoCode?: string;
     paymentMethodId?: string;
+    recurringInterval?: 3 | 6 | 12;
   }) => api.post<{ job: Job; clientSecret?: string; requiresAction: boolean }>('/jobs', data),
   createBundle: (data: {
     serviceTypes: ServiceType[];
@@ -210,6 +211,33 @@ export const admin = {
     resolution: 'cancelled' | 'charged',
     adminResponse: string
   ) => api.post<{ success: boolean }>(`/admin/disputes/${jobId}/resolve`, { serviceType, resolution, adminResponse }),
+};
+
+export interface RecurringPlan {
+  uuid: string;
+  userId: string;
+  serviceType: ServiceType;
+  address: string;
+  intervalMonths: 3 | 6 | 12;
+  discountRate: 0.25 | 0.20 | 0.15;
+  basePrice: number;
+  status: 'active' | 'cancelled';
+  nextJobDate: string;
+  lastJobId?: string;
+  notes?: string;
+  createdAt: string;
+}
+
+export const plans = {
+  create: (data: {
+    serviceType: ServiceType;
+    address: string;
+    intervalMonths: 3 | 6 | 12;
+    basePrice: number;
+    notes?: string;
+  }) => api.post<RecurringPlan>('/plans', data),
+  list: () => api.get<RecurringPlan[]>('/plans'),
+  cancel: (id: string) => api.delete<{ success: boolean }>(`/plans/${id}`),
 };
 
 export const users = {

@@ -6,6 +6,7 @@ import { useBookingStore } from '../store/bookingStore';
 import { useQuery } from '@tanstack/react-query';
 import { services, jobs } from '../lib/api';
 import { PaymentPanel } from '../components/PaymentPanel';
+import { FrequencySelector } from '../components/FrequencySelector';
 import { Input } from '../components/ui/input';
 import { formatCurrency } from '../lib/utils';
 import { toast } from '../hooks/useToast';
@@ -58,7 +59,8 @@ export default function Checkout() {
   const navigate = useNavigate();
   const {
     selectedServices, confirmedAddress, notes, promoCode, scheduledAt,
-    setNotes, setPromoCode, setScheduledAt, setCurrentJobId,
+    recurringInterval,
+    setNotes, setPromoCode, setScheduledAt, setCurrentJobId, setRecurringInterval,
     quotes, quotesReady,
   } = useBookingStore();
 
@@ -80,8 +82,15 @@ export default function Checkout() {
   const hasBundle = selectedServiceObjects.length > 1;
   const priceFor = (svc: typeof selectedServiceObjects[number]) => quotes[svc.id] ?? svc.price;
   const subtotal = selectedServiceObjects.reduce((sum, s) => sum + priceFor(s), 0);
-  const discountAmount = hasBundle ? subtotal * BUNDLE_DISCOUNT : 0;
-  const total = subtotal - discountAmount;
+  const bundleDiscountAmount = hasBundle ? subtotal * BUNDLE_DISCOUNT : 0;
+  const baseTotal = subtotal - bundleDiscountAmount;
+
+  const RECURRING_DISCOUNT_RATES: Record<3 | 6 | 12, number> = { 3: 0.25, 6: 0.20, 12: 0.15 };
+  const recurringDiscountRate = (!hasBundle && recurringInterval) ? RECURRING_DISCOUNT_RATES[recurringInterval] : 0;
+  const recurringDiscountAmount = baseTotal * recurringDiscountRate;
+  const total = baseTotal - recurringDiscountAmount;
+
+  const promoRecurringConflict = !!promoCode && !!recurringInterval;
 
   const applyPromo = () => {
     if (!promoInput.trim()) return;
@@ -128,6 +137,7 @@ export default function Checkout() {
           notes: notes || undefined,
           promoCode: promoCode || undefined,
           paymentMethodId,
+          recurringInterval: recurringInterval ?? undefined,
         });
         jobId = res.data.job.uuid;
         jobServiceType = selectedServices[0];
@@ -226,9 +236,18 @@ export default function Checkout() {
                     <Sparkles className="w-3.5 h-3.5" />
                     Bundle discount (10%)
                   </span>
-                  <span className="font-semibold text-uber-green">−{formatCurrency(discountAmount)}</span>
+                  <span className="font-semibold text-uber-green">−{formatCurrency(bundleDiscountAmount)}</span>
                 </div>
               </>
+            )}
+            {recurringDiscountAmount > 0 && (
+              <div className="flex items-center justify-between text-sm">
+                <span className="flex items-center gap-1.5 font-semibold text-uber-green">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Recurring discount ({Math.round(recurringDiscountRate * 100)}%)
+                </span>
+                <span className="font-semibold text-uber-green">−{formatCurrency(recurringDiscountAmount)}</span>
+              </div>
             )}
             <div className="flex items-center justify-between pt-1">
               <span className="font-black text-black">Total</span>
@@ -298,12 +317,20 @@ export default function Checkout() {
                 >
                   Apply
                 </button>
-
               </div>
             )}
-
-           
+            {promoRecurringConflict && (
+              <p className="text-sm text-red-500 mt-2">Promo codes cannot be combined with recurring plans. Remove one to continue.</p>
+            )}
           </div>
+
+          {!hasBundle && (
+            <FrequencySelector
+              basePrice={baseTotal}
+              value={recurringInterval}
+              onChange={setRecurringInterval}
+            />
+          )}
         </div>
 
 
@@ -324,6 +351,7 @@ export default function Checkout() {
             amount={total}
             label={`Book — ${formatCurrency(total)}`}
             loading={creating}
+            disabled={promoRecurringConflict}
             onPay={handlePay}
             onError={(err) => toast({ title: 'Payment error', description: err, variant: 'destructive' })}
           />

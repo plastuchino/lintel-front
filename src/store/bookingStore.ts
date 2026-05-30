@@ -9,6 +9,7 @@ interface BookingStore {
   scheduledAt: string | null;
   notes: string;
   promoCode: string;
+  recurringInterval: null | 3 | 6 | 12;
   currentJobId: string | null;
   quotes: Partial<Record<ServiceType, number>>;
   quotesReady: boolean;
@@ -22,6 +23,7 @@ interface BookingStore {
   setScheduledAt: (date: string | null) => void;
   setNotes: (notes: string) => void;
   setPromoCode: (code: string) => void;
+  setRecurringInterval: (interval: null | 3 | 6 | 12) => void;
   setCurrentJobId: (id: string) => void;
   setQuotes: (quotes: Partial<Record<ServiceType, number>>) => void;
   setQuotesReady: (ready: boolean) => void;
@@ -38,6 +40,7 @@ export const useBookingStore = create<BookingStore>((set) => ({
   scheduledAt: null,
   notes: '',
   promoCode: '',
+  recurringInterval: null,
   currentJobId: null,
   quotes: {},
   quotesReady: false,
@@ -55,6 +58,7 @@ export const useBookingStore = create<BookingStore>((set) => ({
   setScheduledAt: (date) => set({ scheduledAt: date }),
   setNotes: (notes) => set({ notes }),
   setPromoCode: (code) => set({ promoCode: code }),
+  setRecurringInterval: (interval) => set({ recurringInterval: interval }),
   setCurrentJobId: (id) => set({ currentJobId: id }),
   setQuotes: (quotes) => set({ quotes, quotesReady: true }),
   setQuotesReady: (ready) => set({ quotesReady: ready }),
@@ -69,6 +73,7 @@ export const useBookingStore = create<BookingStore>((set) => ({
       scheduledAt: null,
       notes: '',
       promoCode: '',
+      recurringInterval: null,
       currentJobId: null,
       quotes: {},
       quotesReady: false,

@@ -114,7 +114,7 @@ export default function LandingPage() {
         </div>
         {/* Nav bar */}
         <div className="bg-white border-b border-black/10">
-        <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto sm:px-6 px-2 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
             <img src={logo} alt="lintel" className="h-7 w-7 rounded-full object-cover" />
             <span className="text-black text-sm font-bold tracking-[0.15em] uppercase">LINTEL</span>
@@ -129,11 +129,11 @@ export default function LandingPage() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <Link to="/login" className="px-4 h-8 flex items-center text-black text-[11px] font-semibold tracking-[0.1em] uppercase hover:bg-black/5 transition-colors">
+            <Link to="/login" className="px-4 text-nowrap h-8 flex items-center text-black text-[11px] font-semibold tracking-[0.1em] uppercase hover:bg-black/5 transition-colors">
               LOG IN
             </Link>
-            <Link to="/login" className="px-4 h-8 flex items-center bg-black text-white text-[11px] font-semibold tracking-[0.1em] uppercase hover:bg-black/80 transition-colors">
-              SIGN UP
+            <Link to="/login" className="text-nowrap px-4 h-8 flex items-center bg-black text-white text-[11px] font-semibold tracking-[0.1em] uppercase hover:bg-black/80 transition-colors">
+              GET QUOTE
             </Link>
           </div>
         </div>
@@ -149,7 +149,7 @@ export default function LandingPage() {
           backgroundSize: '28px 28px',
         }} />
 
-        <div className="relative max-w-7xl mx-auto px-6 w-full flex flex-col lg:flex-row items-center gap-16 py-24">
+        <div className="relative max-w-7xl mx-auto px-6 w-full flex flex-col lg:flex-row items-center gap-8 lg:gap-16 py-8 lg:py-24">
 
           {/* Left */}
           <div className="flex-1 max-w-xl">
@@ -165,7 +165,7 @@ export default function LandingPage() {
             </h1>
 
             <p className="text-base text-black/50 leading-relaxed mb-10 max-w-sm">
-              We're a team of dedicated high school students that deliver professional results at low prices. <p className='font-bold'>Don't believe me? Find out your quote below.</p>
+              We're a team of dedicated high school students that deliver professional results at low prices. <span className="font-bold"> Find your quote below.</span>
             </p>
 
             {/* Address input */}
@@ -355,7 +355,7 @@ export default function LandingPage() {
                   </div>
                 )}
                 
-                <div className={`p-6 flex flex-col gap-5 flex-1 ${disabled ? 'opacity-30 grayscale pointer-events-none select-none' : ''}`}>
+                <div className={`sm:p-6 p-1 sm:my-0 my-3 flex flex-col gap-5 flex-1 ${disabled ? 'opacity-30 grayscale pointer-events-none select-none' : ''}`}>
                   <div className="flex items-start justify-between">
                     <div className="w-9 h-9 border border-black/15 flex items-center justify-center">
                       <ServiceIcon />
@@ -376,7 +376,7 @@ export default function LandingPage() {
                       {(id === 'gutter-cleaning' || id === 'window-cleaning' || id === 'pressure-washing') && !disabled && (
                         <Link
                           to={`/services/${id}`}
-                          className="px-3 h-7 flex items-center border border-black/15 text-[10px] font-bold tracking-[0.12em] uppercase text-black/50 hover:text-black hover:border-black/40 transition-colors"
+                          className="px-3 h-7 flex text-nowrap items-center border border-black/15 text-[10px] font-bold tracking-[0.12em] uppercase text-black/50 hover:text-black hover:border-black/40 transition-colors"
                         >
                           LEARN MORE
                         </Link>
@@ -384,7 +384,7 @@ export default function LandingPage() {
                       <button
                         onClick={() => !disabled && navigate('/quote-preview')}
                         disabled={disabled}
-                        className="px-4 h-7 border border-black/20 text-[10px] font-bold tracking-[0.15em] uppercase text-black hover:bg-black hover:text-white transition-colors disabled:cursor-not-allowed"
+                        className="px-4 text-nowrap h-7 border border-black/20 text-[10px] font-bold tracking-[0.15em] uppercase text-black hover:bg-black hover:text-white transition-colors disabled:cursor-not-allowed"
                       >
                         BOOK NOW
                       </button>
