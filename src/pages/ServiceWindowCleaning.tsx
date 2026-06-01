@@ -22,7 +22,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'How often should windows be professionally cleaned?',
-    a: 'Most Bethesda and Rockville homeowners book once or twice a year — typically spring (after winter grime and pollen) and fall (before the holiday season). Homes near high-traffic roads, with heavy tree coverage, or with large glass areas often benefit from quarterly cleanings.',
+    a: 'Most Montgomery County homeowners book once or twice a year — typically spring (after winter grime and pollen) and fall (before the holiday season). Homes near high-traffic roads, with heavy tree coverage, or with large glass areas often benefit from quarterly cleanings.',
   },
   {
     q: 'Do I need to move furniture or clear window sills before the pro arrives?',
@@ -44,8 +44,8 @@ export default function ServiceWindowCleaning() {
   return (
     <div className="min-h-screen bg-white text-black" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
       <Helmet>
-        <title>Window Cleaning in Bethesda &amp; Rockville, MD | Lintel</title>
-        <meta name="description" content="Professional window cleaning in Bethesda, Rockville, and Montgomery County, MD. Interior or exterior, streak-free results, fully insured. Starting at $250. Book online." />
+        <title>Window Cleaning in Montgomery County, MD | Lintel</title>
+        <meta name="description" content="Professional window cleaning in Montgomery County, MD. Interior or exterior, streak-free results, fully insured. Starting at $250. Book online." />
         <link rel="canonical" href="https://uselintel.pro/services/window-cleaning" />
       </Helmet>
 
@@ -79,7 +79,7 @@ export default function ServiceWindowCleaning() {
           <div className="lg:flex-shrink-0 lg:max-w-xs">
             <p className="text-[10px] font-mono text-white/35 tracking-[0.2em] uppercase mb-4">Window Cleaning · Montgomery County, MD</p>
             <h1 className="text-4xl lg:text-5xl font-black text-white leading-tight uppercase mb-8">
-              Window Cleaning in<br />Bethesda &amp; Rockville, MD
+              Window Cleaning in<br />Montgomery County, MD
             </h1>
 
           </div>
@@ -95,7 +95,7 @@ export default function ServiceWindowCleaning() {
           <div>
             <h2 className="text-xl font-black uppercase mb-4">Why Windows in Montgomery County Get Dirty Fast</h2>
             <p className="text-sm text-black/60 leading-relaxed mb-4">
-              Bethesda and Rockville's combination of heavy tree coverage, seasonal pollen, and proximity to DC's traffic corridor means windows accumulate a distinctive grey-green film that becomes visible within weeks of cleaning. In spring, oak and maple pollen coats every horizontal surface — windows included. By fall, it's airborne soot and organic debris from leaf drop.
+              Montgomery County's combination of heavy tree coverage, seasonal pollen, and proximity to DC's traffic corridor means windows accumulate a distinctive grey-green film that becomes visible within weeks of cleaning. In spring, oak and maple pollen coats every horizontal surface — windows included. By fall, it's airborne soot and organic debris from leaf drop.
             </p>
             <p className="text-sm text-black/60 leading-relaxed mb-4">
               Hard water is the other culprit. Montgomery County's water supply leaves mineral deposits on glass each time rain dries on the surface. Over months, those deposits build up into a haze that isn't removable with standard household cleaners. Professional cleaning with purified water removes the deposits and prevents new ones from forming immediately.
@@ -156,7 +156,7 @@ export default function ServiceWindowCleaning() {
       <section className="max-w-4xl mx-auto px-6 py-14 border-b border-black/10">
         <h2 className="text-xl font-black uppercase mb-4">Montgomery County Students. Spotless Results.</h2>
         <p className="text-sm text-black/60 leading-relaxed max-w-xl mb-4">
-          Every Lintel pro is a vetted, background-checked student from the local area — Bethesda, Rockville, Chevy Chase, Potomac, and beyond. They're trained on Lintel's purified water and pole systems and follow a clear service protocol on every job. You get professional results and the satisfaction of supporting local students building real skills.
+          Every Lintel pro is a vetted, background-checked student from the Montgomery County area. They're trained on Lintel's purified water and pole systems and follow a clear service protocol on every job. You get professional results and the satisfaction of supporting local students building real skills.
         </p>
         <p className="text-sm text-black/60 leading-relaxed max-w-xl">
           All pros maintain a 4.5★ minimum rating. After your cleaning, you'll rate the experience — that's how we maintain quality across the network.
@@ -192,7 +192,7 @@ export default function ServiceWindowCleaning() {
           </Link>
           <Link to="/blog/window-cleaning-bethesda-md" className="border border-black/10 p-5 hover:border-black/30 transition-colors">
             <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest mb-1">Blog</p>
-            <p className="text-sm font-bold text-black">Window Cleaning in Bethesda, MD</p>
+            <p className="text-sm font-bold text-black">Window Cleaning in Montgomery County, MD</p>
             <p className="text-xs text-black/50 mt-1">What to expect and what it costs.</p>
           </Link>
         </div>

@@ -13,8 +13,8 @@ const FAQ_ITEMS = [
     a: 'We remove all debris — leaves, twigs, seed pods, and compacted buildup — from your gutters using high-powered vacuum equipment. We also flush downspouts to confirm they\'re clear and bag and remove all waste from the property. The job is complete when water flows freely.',
   },
   {
-    q: 'How often should gutters be cleaned in the Bethesda / Rockville area?',
-    a: 'Twice a year is the standard recommendation for Montgomery County homes: once in late spring (after tree pollen and seed pods fall) and once in late fall (after the leaves drop). Homes under heavy tree canopy — especially oaks and maples common throughout Bethesda and Potomac — may need a third cleaning in early fall.',
+    q: 'How often should gutters be cleaned in Montgomery County?',
+    a: 'Twice a year is the standard recommendation for Montgomery County homes: once in late spring (after tree pollen and seed pods fall) and once in late fall (after the leaves drop). Homes under heavy tree canopy — especially oaks and maples common throughout Montgomery County — may need a third cleaning in early fall.',
   },
   {
     q: 'How long does a gutter cleaning take?',
@@ -44,8 +44,8 @@ export default function ServiceGutterCleaning() {
   return (
     <div className="min-h-screen bg-white text-black" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
       <Helmet>
-        <title>Gutter Cleaning in Bethesda &amp; Rockville, MD | Lintel</title>
-        <meta name="description" content="Professional gutter cleaning in Bethesda, Rockville, and Montgomery County, MD. Ground-level vacuum equipment, fully insured, starting at $149. Book online in minutes." />
+        <title>Gutter Cleaning in Montgomery County, MD | Lintel</title>
+        <meta name="description" content="Professional gutter cleaning in Montgomery County, MD. Ground-level vacuum equipment, fully insured, starting at $149. Book online in minutes." />
         <link rel="canonical" href="https://uselintel.pro/services/gutter-cleaning" />
       </Helmet>
 
@@ -80,7 +80,7 @@ export default function ServiceGutterCleaning() {
           <div className="lg:flex-shrink-0 lg:max-w-xs">
             <p className="text-[10px] font-mono text-white/35 tracking-[0.2em] uppercase mb-4">Gutter Cleaning · Montgomery County, MD</p>
             <h1 className="text-4xl lg:text-5xl font-black text-white leading-tight uppercase mb-8">
-              Gutter Cleaning in<br />Bethesda &amp; Rockville, MD
+              Gutter Cleaning in<br />Montgomery County, MD
             </h1>
 
           </div>
@@ -95,9 +95,9 @@ export default function ServiceGutterCleaning() {
       <section className="max-w-4xl mx-auto px-6 py-14 border-b border-black/10">
         <div className="grid md:grid-cols-2 gap-12">
           <div>
-            <h2 className="text-xl font-black uppercase mb-4">Why Bethesda &amp; Rockville Gutters Clog Fast</h2>
+            <h2 className="text-xl font-black uppercase mb-4">Why Montgomery County Gutters Clog Fast</h2>
             <p className="text-sm text-black/60 leading-relaxed mb-4">
-              Montgomery County's tree canopy is one of its best features — and the main reason gutter cleaning is a twice-a-year necessity. The oak, maple, and tulip poplar trees lining streets throughout Bethesda, Chevy Chase, Potomac, and North Bethesda drop heavy seed loads in spring and dense leaf piles in fall. Without regular cleaning, that organic matter compresses into a wet mass that blocks water flow completely.
+              Montgomery County's tree canopy is one of its best features — and the main reason gutter cleaning is a twice-a-year necessity. The oak, maple, and tulip poplar trees lining streets throughout the county drop heavy seed loads in spring and dense leaf piles in fall. Without regular cleaning, that organic matter compresses into a wet mass that blocks water flow completely.
             </p>
             <p className="text-sm text-black/60 leading-relaxed mb-4">
               Standing water in clogged gutters is more than a cosmetic issue. It puts direct weight stress on the gutter system, causes wood fascia to rot, and creates the perfect environment for mosquitoes to breed. In winter, blocked gutters contribute to ice dams — a significant cause of roof damage in Maryland homes.

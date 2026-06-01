@@ -10,7 +10,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Will pressure washing damage my driveway or deck?',
-    a: 'Our pros use commercial-grade equipment with the correct nozzle and PSI settings for each surface type. Soft surfaces like wood decking are cleaned at lower pressure with appropriate detergents — not blasted at driveway settings. We\'ve cleaned hundreds of driveways, patios, and decks across Bethesda and Rockville without surface damage.',
+    a: 'Our pros use commercial-grade equipment with the correct nozzle and PSI settings for each surface type. Soft surfaces like wood decking are cleaned at lower pressure with appropriate detergents — not blasted at driveway settings. We\'ve cleaned hundreds of driveways, patios, and decks across Montgomery County without surface damage.',
   },
   {
     q: 'How long does pressure washing take?',
@@ -44,8 +44,8 @@ export default function ServicePressureWashing() {
   return (
     <div className="min-h-screen bg-white text-black" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
       <Helmet>
-        <title>Pressure Washing in Bethesda &amp; Rockville, MD | Lintel</title>
-        <meta name="description" content="Professional pressure washing in Bethesda, Rockville, and Montgomery County, MD. Driveways, patios, decks, siding, and sidewalks. Fully insured, starting at $200. Book online." />
+        <title>Pressure Washing in Montgomery County, MD | Lintel</title>
+        <meta name="description" content="Professional pressure washing in Montgomery County, MD. Driveways, patios, decks, siding, and sidewalks. Fully insured, starting at $200. Book online." />
         <link rel="canonical" href="https://uselintel.pro/services/pressure-washing" />
       </Helmet>
 
@@ -79,7 +79,7 @@ export default function ServicePressureWashing() {
           <div className="lg:flex-shrink-0 lg:max-w-xs">
             <p className="text-[10px] font-mono text-white/35 tracking-[0.2em] uppercase mb-4">Pressure Washing · Montgomery County, MD</p>
             <h1 className="text-4xl lg:text-5xl font-black text-white leading-tight uppercase mb-8">
-              Pressure Washing in<br />Bethesda &amp; Rockville, MD
+              Pressure Washing in<br />Montgomery County, MD
             </h1>
 
           </div>
@@ -95,10 +95,10 @@ export default function ServicePressureWashing() {
           <div>
             <h2 className="text-xl font-black uppercase mb-4">Why Maryland Surfaces Need Regular Cleaning</h2>
             <p className="text-sm text-black/60 leading-relaxed mb-4">
-              Montgomery County's humid mid-Atlantic climate creates ideal conditions for algae, mold, and mildew to grow on outdoor surfaces. Concrete driveways, stone patios, and wood decks in Bethesda, Rockville, and Potomac develop black streaking and green slick patches over the course of a season — not just an eyesore, but genuinely slippery and damaging to surfaces over time.
+              Montgomery County's humid mid-Atlantic climate creates ideal conditions for algae, mold, and mildew to grow on outdoor surfaces. Concrete driveways, stone patios, and wood decks across Montgomery County develop black streaking and green slick patches over the course of a season — not just an eyesore, but genuinely slippery and damaging to surfaces over time.
             </p>
             <p className="text-sm text-black/60 leading-relaxed mb-4">
-              Siding is equally affected. Vinyl and fiber cement siding on older Bethesda colonials and Rockville townhomes accumulates a grey film of atmospheric dirt and biological growth that no garden hose can remove. A professional pressure wash strips it completely and restores curb appeal before a sale, a party, or just because you're tired of looking at it.
+              Siding is equally affected. Vinyl and fiber cement siding on Montgomery County homes accumulates a grey film of atmospheric dirt and biological growth that no garden hose can remove. A professional pressure wash strips it completely and restores curb appeal before a sale, a party, or just because you're tired of looking at it.
             </p>
             <p className="text-sm text-black/60 leading-relaxed">
               We serve all of Montgomery County: Bethesda, Rockville, Chevy Chase, Potomac, Silver Spring, Gaithersburg, Germantown, and North Bethesda.
@@ -157,7 +157,7 @@ export default function ServicePressureWashing() {
       <section className="max-w-4xl mx-auto px-6 py-14 border-b border-black/10">
         <h2 className="text-xl font-black uppercase mb-4">Local Students. Professional Results.</h2>
         <p className="text-sm text-black/60 leading-relaxed max-w-xl mb-4">
-          Lintel pros are background-checked students from the Montgomery County area — Bethesda, Rockville, Chevy Chase, Gaithersburg. They operate Lintel-owned commercial equipment and follow service protocols we've developed across hundreds of jobs. You get professional results without the overhead of a large service company.
+          Lintel pros are background-checked students from the Montgomery County area. They operate Lintel-owned commercial equipment and follow service protocols we've developed across hundreds of jobs. You get professional results without the overhead of a large service company.
         </p>
         <p className="text-sm text-black/60 leading-relaxed max-w-xl">
           Every pro carries a 4.5★ minimum rating to stay active on the platform. The network average is 4.9★. After your job, you'll rate the experience — that feedback directly shapes who gets future bookings.
