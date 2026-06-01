@@ -1,7 +1,7 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { ChevronRight } from 'lucide-react';
 import logo from '../assets/logo.jpeg';
+import { ServiceQuoteCTA } from '../components/ServiceQuoteCTA';
 
 const FAQ_ITEMS = [
   {
@@ -41,8 +41,6 @@ const FAQ_SCHEMA = {
 };
 
 export default function ServiceWindowCleaning() {
-  const navigate = useNavigate();
-
   return (
     <div className="min-h-screen bg-white text-black" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
       <Helmet>
@@ -76,21 +74,18 @@ export default function ServiceWindowCleaning() {
       </header>
 
       {/* Hero */}
-      <section className="pt-14 border-b border-black/10">
-        <div className="max-w-4xl mx-auto px-6 py-16">
-          <p className="text-[10px] font-mono text-black/40 tracking-[0.2em] uppercase mb-3">Window Cleaning · Montgomery County, MD</p>
-          <h1 className="text-4xl lg:text-5xl font-black text-black leading-tight uppercase mb-5">
-            Window Cleaning in<br />Bethesda &amp; Rockville, MD
-          </h1>
-          <p className="text-sm text-black/55 leading-relaxed max-w-xl mb-8">
-            Streak-free windows, inside or out. We use purified water and professional pole systems — no streaks, no residue, no ladder drama. Book interior, exterior, or both. Starting at $250.
-          </p>
-          <button
-            onClick={() => navigate('/')}
-            className="inline-flex items-center gap-2 px-6 h-11 bg-[#008060] text-white font-bold text-[11px] tracking-[0.2em] uppercase hover:bg-[#006b50] transition-colors"
-          >
-            SEE PRICES IN MY AREA <ChevronRight className="w-3.5 h-3.5" />
-          </button>
+      <section className="pt-14 bg-[#0d0d0d] min-h-screen flex flex-col">
+        <div className="flex-1 w-full max-w-6xl mx-auto px-6 flex flex-col lg:flex-row lg:items-center gap-10 lg:gap-16 py-12 lg:py-0">
+          <div className="lg:flex-shrink-0 lg:max-w-xs">
+            <p className="text-[10px] font-mono text-white/35 tracking-[0.2em] uppercase mb-4">Window Cleaning · Montgomery County, MD</p>
+            <h1 className="text-4xl lg:text-5xl font-black text-white leading-tight uppercase mb-8">
+              Window Cleaning in<br />Bethesda &amp; Rockville, MD
+            </h1>
+
+          </div>
+          <div className="flex-1 flex items-center justify-center lg:justify-end">
+            <ServiceQuoteCTA serviceType="window-cleaning" className="w-full max-w-[520px]" />
+          </div>
         </div>
       </section>
 
@@ -204,17 +199,16 @@ export default function ServiceWindowCleaning() {
       </section>
 
       {/* CTA */}
-      <section className="max-w-4xl mx-auto px-6 py-16">
-        <div className="bg-black p-10 text-center">
-          <p className="text-[10px] font-mono text-white/40 tracking-[0.2em] uppercase mb-3">Ready to book?</p>
-          <h2 className="text-2xl font-black text-white uppercase mb-3">Streak-Free Windows. Inside or Out.</h2>
-          <p className="text-sm text-white/50 mb-8 max-w-sm mx-auto">Enter your address and see exact pricing for your home — takes under 2 minutes.</p>
-          <button
-            onClick={() => navigate('/')}
-            className="inline-flex items-center gap-2 px-7 h-11 bg-white text-black font-bold text-[11px] tracking-[0.2em] uppercase hover:bg-white/90 transition-colors"
-          >
-            SEE MY PRICE <ChevronRight className="w-3.5 h-3.5" />
-          </button>
+      <section className="bg-[#0d0d0d]">
+        <div className="max-w-6xl mx-auto px-6 py-16 flex flex-col lg:flex-row lg:items-center gap-10 lg:gap-16">
+          <div className="lg:flex-shrink-0 lg:max-w-xs">
+            <p className="text-[10px] font-mono text-white/35 tracking-[0.2em] uppercase mb-3">Ready to book?</p>
+            <h2 className="text-3xl font-black text-white uppercase mb-8">Streak-Free Windows.<br />Inside or Out.</h2>
+
+          </div>
+          <div className="flex-1 flex items-center justify-center lg:justify-end">
+            <ServiceQuoteCTA serviceType="window-cleaning" className="w-full max-w-[520px]" />
+          </div>
         </div>
       </section>
 
