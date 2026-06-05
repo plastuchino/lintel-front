@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { stripePromise } from '../lib/stripe';
 import { ChevronLeft, Tag, X, Sparkles } from 'lucide-react';
 import { useBookingStore } from '../store/bookingStore';
@@ -85,8 +86,8 @@ export default function Checkout() {
   const bundleDiscountAmount = hasBundle ? subtotal * BUNDLE_DISCOUNT : 0;
   const baseTotal = subtotal - bundleDiscountAmount;
 
-  const RECURRING_DISCOUNT_RATES: Record<3 | 6 | 12, number> = { 3: 0.25, 6: 0.20, 12: 0.15 };
-  const recurringDiscountRate = (!hasBundle && recurringInterval) ? RECURRING_DISCOUNT_RATES[recurringInterval] : 0;
+  const FIRST_JOB_DISCOUNT_RATE = 0.05;
+  const recurringDiscountRate = (!hasBundle && recurringInterval) ? FIRST_JOB_DISCOUNT_RATE : 0;
   const recurringDiscountAmount = baseTotal * recurringDiscountRate;
   const total = baseTotal - recurringDiscountAmount;
 
@@ -176,6 +177,17 @@ export default function Checkout() {
         hasBundle,
       };
 
+      // This is the final tag
+
+      // gtag('event', 'conversion', {
+      //   'send_to': 'AW-18193036616/wK5ICJn64rccEMjqjuND',
+      //   'transaction_id': ''
+
+      // });
+
+
+
+
       navigate('/booking-confirmation', { state: confirmationState });
     } finally {
       setCreating(false);
@@ -184,6 +196,10 @@ export default function Checkout() {
 
   return (
     <div className="min-h-screen bg-white pt-16">
+      <Helmet>
+        <title>Complete Your Booking | Lintel</title>
+        <meta name="description" content="Complete your home service booking on Lintel. Securely enter payment details and confirm your service appointment in Montgomery County, MD." />
+      </Helmet>
       <div className="max-w-xl mx-auto px-6 py-10">
         <button
           onClick={() => navigate('/book')}
@@ -244,7 +260,7 @@ export default function Checkout() {
               <div className="flex items-center justify-between text-sm">
                 <span className="flex items-center gap-1.5 font-semibold text-uber-green">
                   <Sparkles className="w-3.5 h-3.5" />
-                  Recurring discount ({Math.round(recurringDiscountRate * 100)}%)
+                  Recurring discount (5% — first visit)
                 </span>
                 <span className="font-semibold text-uber-green">−{formatCurrency(recurringDiscountAmount)}</span>
               </div>

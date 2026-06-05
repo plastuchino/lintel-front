@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ChevronDown, ChevronUp, ArrowLeft, User, AlertTriangle } from 'lucide-react';
-import { admin, AdminWorker, AdminPayout, Job } from '../lib/api';
+import { admin, AdminWorker, AdminPayout, AdminProspect, Job } from '../lib/api';
 import { formatCurrency } from '../lib/utils';
 import { toast } from '../hooks/useToast';
 
@@ -283,7 +284,7 @@ function DisputeCard({ job }: { job: Job }) {
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const [tab, setTab] = useState<'workers' | 'disputes'>('workers');
+  const [tab, setTab] = useState<'workers' | 'disputes' | 'prospects'>('workers');
 
   const { data: workers, isLoading: workersLoading, isError: workersError } = useQuery({
     queryKey: ['admin', 'workers'],
@@ -295,8 +296,17 @@ export default function AdminDashboard() {
     queryFn: () => admin.getDisputes().then((r) => r.data),
   });
 
+  const { data: prospects, isLoading: prospectsLoading, isError: prospectsError } = useQuery({
+    queryKey: ['admin', 'prospects'],
+    queryFn: () => admin.getProspects().then((r) => r.data),
+  });
+
   return (
     <div className="min-h-screen bg-uber-gray-50">
+      <Helmet>
+        <title>Admin Dashboard | Lintel</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <div className="max-w-2xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -327,6 +337,17 @@ export default function AdminDashboard() {
             {disputes && disputes.length > 0 && (
               <span className="w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center font-black">
                 {disputes.length}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setTab('prospects')}
+            className={`flex-1 h-9 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-1.5 ${tab === 'prospects' ? 'bg-white text-black shadow-sm' : 'text-uber-gray-500 hover:text-black'}`}
+          >
+            Prospects
+            {prospects && prospects.filter((p: AdminProspect) => p.status === 'new').length > 0 && (
+              <span className="w-5 h-5 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center font-black">
+                {prospects.filter((p: AdminProspect) => p.status === 'new').length}
               </span>
             )}
           </button>
@@ -366,6 +387,55 @@ export default function AdminDashboard() {
                   {disputes.length === 0 && (
                     <div className="text-center py-16 text-uber-gray-400">No open disputes.</div>
                   )}
+                </div>
+              </>
+            )}
+          </>
+        )}
+
+        {tab === 'prospects' && (
+          <>
+            {prospectsLoading && <div className="text-center py-16 text-uber-gray-400">Loading prospects...</div>}
+            {prospectsError && <div className="text-center py-16 text-red-500">Failed to load prospects.</div>}
+            {prospects && prospects.length === 0 && (
+              <div className="text-center py-16 text-uber-gray-400">No prospects yet.</div>
+            )}
+            {prospects && prospects.length > 0 && (
+              <>
+                <p className="text-sm text-uber-gray-500 mb-4">{prospects.length} prospect{prospects.length !== 1 ? 's' : ''}</p>
+                <div className="space-y-3">
+                  {prospects.map((p: AdminProspect) => (
+                    <div key={p.uuid} className="bg-white rounded-2xl border border-uber-gray-100 shadow-sm px-4 py-4 space-y-2">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="font-black text-black text-base">{p.name}</h3>
+                            {p.status === 'converted' ? (
+                              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">Converted</span>
+                            ) : (
+                              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-uber-gray-100 text-uber-gray-500">New</span>
+                            )}
+                          </div>
+                          <p className="text-sm text-uber-gray-500 mt-0.5">{p.email}</p>
+                        </div>
+                        <p className="text-xs text-uber-gray-400 flex-shrink-0">{fmt(p.createdAt)}</p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+                        <div>
+                          <span className="text-uber-gray-400 font-semibold uppercase tracking-wider">Phone</span>
+                          <p className="text-black font-medium mt-0.5">{p.phone}</p>
+                        </div>
+                        <div>
+                          <span className="text-uber-gray-400 font-semibold uppercase tracking-wider">Services</span>
+                          <p className="text-black font-medium mt-0.5">{p.serviceTypes.map((s) => fmtServiceType(s)).join(', ') || '—'}</p>
+                        </div>
+                        <div className="col-span-2">
+                          <span className="text-uber-gray-400 font-semibold uppercase tracking-wider">Address</span>
+                          <p className="text-black font-medium mt-0.5">{p.address || '—'}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </>
             )}

@@ -1,9 +1,15 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 
 export default function Privacy() {
   return (
     <div className="min-h-screen bg-background pt-20 pb-16">
+      <Helmet>
+        <title>Privacy Policy | Lintel</title>
+        <meta name="description" content="Read Lintel's privacy policy. Learn how we collect, use, and protect your personal information when you use our home services platform." />
+        <link rel="canonical" href="https://uselintel.pro/privacy" />
+      </Helmet>
       <div className="max-w-3xl mx-auto px-4">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <div className="mb-8">

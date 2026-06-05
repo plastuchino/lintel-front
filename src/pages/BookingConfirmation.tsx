@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { CheckCircle, ChevronRight } from 'lucide-react';
 import { formatCurrency } from '../lib/utils';
 import { useBookingStore } from '../store/bookingStore';
@@ -54,6 +55,10 @@ export default function BookingConfirmation() {
 
   return (
     <div className="min-h-screen bg-white pt-16">
+      <Helmet>
+        <title>Booking Confirmed | Lintel</title>
+        <meta name="description" content="Your home service booking is confirmed. Track your job status and get ready for your upcoming service appointment with Lintel." />
+      </Helmet>
       <div className="max-w-lg mx-auto px-6 py-12">
         {/* Success icon + headline */}
         <div className="flex flex-col items-center text-center mb-10">

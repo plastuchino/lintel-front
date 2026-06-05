@@ -1,9 +1,15 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 
 export default function Terms() {
   return (
     <div className="min-h-screen bg-background pt-20 pb-16">
+      <Helmet>
+        <title>Terms of Service | Lintel</title>
+        <meta name="description" content="Read Lintel's terms of service. Understand your rights and responsibilities when booking home services on the Lintel platform." />
+        <link rel="canonical" href="https://uselintel.pro/terms" />
+      </Helmet>
       <div className="max-w-3xl mx-auto px-4">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <div className="mb-8">

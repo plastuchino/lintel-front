@@ -18,6 +18,7 @@ interface BookingStore {
   /** Timestamp (ms) when captchaToken was received. */
   captchaTokenAt: number | undefined;
   toggleService: (service: ServiceType) => void;
+  setSelectedServices: (services: ServiceType[]) => void;
   setAddress: (address: string, confirmed?: boolean) => void;
   setCoordinates: (coords: { lat: number; lng: number }) => void;
   setScheduledAt: (date: string | null) => void;
@@ -52,6 +53,7 @@ export const useBookingStore = create<BookingStore>((set) => ({
         ? state.selectedServices.filter((s) => s !== service)
         : [...state.selectedServices, service],
     })),
+  setSelectedServices: (services) => set({ selectedServices: services }),
   setAddress: (address, confirmed) =>
     set({ address, confirmedAddress: confirmed ? address : '' }),
   setCoordinates: (coords) => set({ coordinates: coords }),

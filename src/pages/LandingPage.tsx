@@ -2,12 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Shield, Clock, CheckCircle, ChevronRight, ArrowRight, Star } from 'lucide-react';
-import { Turnstile } from '@marsidev/react-turnstile';
 import { useAuthStore } from '../store/authStore';
 import { useBookingStore } from '../store/bookingStore';
-
-const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string;
-
 import { AddressSearch } from '../components/AddressSearch';
 import logo from '../assets/logo.jpeg';
 
@@ -79,7 +75,7 @@ const TEAM = [
 export default function LandingPage() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
-  const { setAddress, setCaptchaToken } = useBookingStore();
+  const { setAddress } = useBookingStore();
   const [heroAddress, setHeroAddress] = useState('');
 
   useEffect(() => {
@@ -97,7 +93,24 @@ export default function LandingPage() {
       <Helmet>
         <title>Lintel — On-Demand Home Services | Bethesda &amp; Rockville, MD</title>
         <meta name="description" content="Book vetted home service professionals in Bethesda, Rockville, and Montgomery County, MD. Gutter cleaning, pressure washing, window cleaning — on demand. Pay only after the job is done." />
+        <meta name="keywords" content="home services bethesda md, home services rockville md, gutter cleaning montgomery county, pressure washing bethesda, window cleaning rockville, on demand home services, book home services online, vetted home service professionals, montgomery county home services" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Lintel — On-Demand Home Services | Bethesda &amp; Rockville, MD" />
+        <meta property="og:description" content="Book vetted home service professionals in Bethesda, Rockville, and Montgomery County, MD. Pay only after the job is done." />
+        <meta property="og:url" content="https://uselintel.pro/" />
+        <meta property="og:image" content="https://uselintel.pro/og-image.png" />
+        <meta property="og:site_name" content="Lintel" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Lintel — On-Demand Home Services | Bethesda &amp; Rockville, MD" />
+        <meta name="twitter:description" content="Book vetted home service professionals in Bethesda, Rockville, and Montgomery County, MD. Pay only after the job is done." />
+        <meta name="twitter:image" content="https://uselintel.pro/og-image.png" />
       </Helmet>
+
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Home', item: 'https://uselintel.pro/' }],
+      }) }} />
 
       {/* ── Nav ─────────────────────────────────────────────────────────── */}
       <header className="fixed top-0 left-0 right-0 z-50">
@@ -169,31 +182,31 @@ export default function LandingPage() {
             </p>
 
             {/* Address input */}
-            <div className="border border-[#008060]/40 bg-white max-w-md">
+            <div className="border-2 border-[#008060] bg-white max-w-md shadow-[0_0_0_4px_rgba(0,128,96,0.08)]">
               <div className="p-4 pb-3">
-                <p className="text-[10px] font-mono font-semibold text-black/40 tracking-[0.2em] uppercase mb-3">
-                  Your Address
+                <p className="text-[10px] font-mono font-semibold text-[#008060] tracking-[0.2em] uppercase mb-3">
+                  Get an Instant Quote
                 </p>
-                <div className="flex items-center gap-2">
-                  {/* <MapPin className="w-3.5 h-3.5 text-black/30 flex-shrink-0" /> */}
-                  <AddressSearch
-                    value={heroAddress}
-                    onChange={setHeroAddress}
-                    onConfirm={handleAddressConfirm}
-                    placeholder="Enter your home address..."
-                  />
-                </div>
+                <AddressSearch
+                  value={heroAddress}
+                  onChange={setHeroAddress}
+                  onConfirm={handleAddressConfirm}
+                  placeholder="Enter your home address..."
+                />
               </div>
-              <div className="px-4 pb-4">
+              <div className="px-4 pb-3">
                 <button
                   onClick={() => handleAddressConfirm(heroAddress)}
                   disabled={!heroAddress.trim()}
-                  className="w-full h-11 bg-[#008060] text-white font-bold text-[11px] tracking-[0.2em] uppercase flex items-center justify-center gap-2 hover:bg-[#006b50] transition-colors disabled:bg-black/20 disabled:cursor-not-allowed"
+                  className="w-full h-12 bg-[#008060] text-white font-bold text-[12px] tracking-[0.2em] uppercase flex items-center justify-center gap-2 hover:bg-[#006b50] transition-colors disabled:bg-black/20 disabled:cursor-not-allowed"
                 >
-                  SEE PRICES
+                  SEE MY PRICE
                   <ChevronRight className="w-3.5 h-3.5" />
                 </button>
               </div>
+              <p className="px-4 pb-3 text-[11px] text-black/35 font-mono">
+                No payment until the job is done.
+              </p>
             </div>
 
             <p className="mt-4 text-[12px] text-black/35 font-mono">
@@ -490,15 +503,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Pre-warm Turnstile token silently so /quote has it ready immediately */}
-      <Turnstile
-        siteKey={TURNSTILE_SITE_KEY}
-        onSuccess={(token) => setCaptchaToken(token)}
-        onError={() => { /* silent — QuotePreview falls back to its own widget */ }}
-        onExpire={() => { /* silent */ }}
-        options={{ size: 'invisible' }}
-        style={{ display: 'none' }}
-      />
     </div>
   );
 }

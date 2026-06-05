@@ -46,13 +46,46 @@ export default function ServiceWindowCleaning() {
       <Helmet>
         <title>Window Cleaning in Montgomery County, MD | Lintel</title>
         <meta name="description" content="Professional window cleaning in Montgomery County, MD. Interior or exterior, streak-free results, fully insured. Starting at $250. Book online." />
+        <meta name="keywords" content="window cleaning montgomery county md, window cleaning bethesda, window cleaning rockville md, residential window cleaning maryland, streak-free window cleaning near me, exterior window cleaning bethesda" />
         <link rel="canonical" href="https://uselintel.pro/services/window-cleaning" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Window Cleaning in Montgomery County, MD | Lintel" />
+        <meta property="og:description" content="Professional window cleaning in Montgomery County, MD. Interior or exterior, streak-free results, fully insured. Book online." />
+        <meta property="og:url" content="https://uselintel.pro/services/window-cleaning" />
+        <meta property="og:image" content="https://uselintel.pro/og-image.png" />
+        <meta property="og:site_name" content="Lintel" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Window Cleaning in Montgomery County, MD | Lintel" />
+        <meta name="twitter:description" content="Professional window cleaning in Montgomery County, MD. Interior or exterior, streak-free results, fully insured. Book online." />
+        <meta name="twitter:image" content="https://uselintel.pro/og-image.png" />
       </Helmet>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_SCHEMA) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_SCHEMA) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        name: 'Window Cleaning',
+        description: 'Professional residential window cleaning, interior and exterior. Streak-free results using professional equipment and solutions.',
+        url: 'https://uselintel.pro/services/window-cleaning',
+        provider: { '@type': 'LocalBusiness', name: 'Lintel', url: 'https://uselintel.pro' },
+        areaServed: ['Bethesda, MD', 'Rockville, MD', 'Montgomery County, MD', 'Chevy Chase, MD', 'Potomac, MD', 'Silver Spring, MD', 'Gaithersburg, MD', 'Germantown, MD'],
+        offers: { '@type': 'Offer', price: '119', priceCurrency: 'USD', description: 'Starting price for standard exterior window cleaning' },
+      }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://uselintel.pro/' },
+          { '@type': 'ListItem', position: 2, name: 'Services', item: 'https://uselintel.pro/#services' },
+          { '@type': 'ListItem', position: 3, name: 'Window Cleaning', item: 'https://uselintel.pro/services/window-cleaning' },
+        ],
+      }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        speakable: { '@type': 'SpeakableSpecification', cssSelector: '#faq' },
+        url: 'https://uselintel.pro/services/window-cleaning',
+      }) }} />
 
       {/* Nav */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-black/10">
@@ -164,7 +197,7 @@ export default function ServiceWindowCleaning() {
       </section>
 
       {/* FAQ */}
-      <section className="max-w-4xl mx-auto px-6 py-14 border-b border-black/10">
+      <section id="faq" className="max-w-4xl mx-auto px-6 py-14 border-b border-black/10">
         <h2 className="text-xl font-black uppercase mb-8">Frequently Asked Questions</h2>
         <div className="space-y-0 divide-y divide-black/10 border-y border-black/10">
           {FAQ_ITEMS.map(({ q, a }) => (

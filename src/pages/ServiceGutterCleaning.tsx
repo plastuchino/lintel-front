@@ -46,13 +46,46 @@ export default function ServiceGutterCleaning() {
       <Helmet>
         <title>Gutter Cleaning in Montgomery County, MD | Lintel</title>
         <meta name="description" content="Professional gutter cleaning in Montgomery County, MD. Ground-level vacuum equipment, fully insured, starting at $149. Book online in minutes." />
+        <meta name="keywords" content="gutter cleaning montgomery county md, gutter cleaning bethesda, gutter cleaning rockville md, gutter cleaning service near me, professional gutter cleaning, gutter cleaning cost maryland" />
         <link rel="canonical" href="https://uselintel.pro/services/gutter-cleaning" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Gutter Cleaning in Montgomery County, MD | Lintel" />
+        <meta property="og:description" content="Professional gutter cleaning in Montgomery County, MD. Ground-level vacuum equipment, fully insured. Book online in minutes." />
+        <meta property="og:url" content="https://uselintel.pro/services/gutter-cleaning" />
+        <meta property="og:image" content="https://uselintel.pro/og-image.png" />
+        <meta property="og:site_name" content="Lintel" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Gutter Cleaning in Montgomery County, MD | Lintel" />
+        <meta name="twitter:description" content="Professional gutter cleaning in Montgomery County, MD. Ground-level vacuum equipment, fully insured. Book online." />
+        <meta name="twitter:image" content="https://uselintel.pro/og-image.png" />
       </Helmet>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_SCHEMA) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_SCHEMA) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        name: 'Gutter Cleaning',
+        description: 'Professional gutter cleaning using ground-level vacuum equipment. We remove all debris, flush downspouts, and bag all waste from the property.',
+        url: 'https://uselintel.pro/services/gutter-cleaning',
+        provider: { '@type': 'LocalBusiness', name: 'Lintel', url: 'https://uselintel.pro' },
+        areaServed: ['Bethesda, MD', 'Rockville, MD', 'Montgomery County, MD', 'Chevy Chase, MD', 'Potomac, MD', 'Silver Spring, MD', 'Gaithersburg, MD', 'Germantown, MD'],
+        offers: { '@type': 'Offer', price: '89', priceCurrency: 'USD', description: 'Starting price for standard single-story home' },
+      }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://uselintel.pro/' },
+          { '@type': 'ListItem', position: 2, name: 'Services', item: 'https://uselintel.pro/#services' },
+          { '@type': 'ListItem', position: 3, name: 'Gutter Cleaning', item: 'https://uselintel.pro/services/gutter-cleaning' },
+        ],
+      }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        speakable: { '@type': 'SpeakableSpecification', cssSelector: '#faq' },
+        url: 'https://uselintel.pro/services/gutter-cleaning',
+      }) }} />
 
       {/* Nav */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-black/10">
@@ -166,7 +199,7 @@ export default function ServiceGutterCleaning() {
       </section>
 
       {/* FAQ */}
-      <section className="max-w-4xl mx-auto px-6 py-14 border-b border-black/10">
+      <section id="faq" className="max-w-4xl mx-auto px-6 py-14 border-b border-black/10">
         <h2 className="text-xl font-black uppercase mb-8">Frequently Asked Questions</h2>
         <div className="space-y-0 divide-y divide-black/10 border-y border-black/10">
           {FAQ_ITEMS.map(({ q, a }) => (

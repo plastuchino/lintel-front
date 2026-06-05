@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { CheckCircle, Loader2, ChevronRight, Sparkles } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '../store/authStore';
@@ -134,6 +135,10 @@ export default function Home() {
 
   return (
     <>
+      <Helmet>
+        <title>Book a Home Service | Lintel</title>
+        <meta name="description" content="Book gutter cleaning, pressure washing, window cleaning, and more from vetted professionals in Montgomery County, MD. Pay only after the job is done." />
+      </Helmet>
       {showUpsell && serviceList && (
         <UpsellModal
           originalServiceId={selectedServices[0]}

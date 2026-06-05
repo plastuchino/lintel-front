@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { ChevronLeft, CheckCircle, Loader2, KeyRound, AlertTriangle, Calendar, FileText, Clock, ShieldCheck } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { jobs, plans } from '../lib/api';
@@ -139,6 +140,10 @@ export default function JobTracking() {
 
   return (
     <div className="min-h-screen bg-white pt-16">
+      <Helmet>
+        <title>Track Your Job | Lintel</title>
+        <meta name="description" content="Track the status of your home service job on Lintel. See real-time updates, confirm job completion, and release payment to your pro." />
+      </Helmet>
       <div className="max-w-5xl mx-auto px-6 py-10">
         <button onClick={() => navigate('/jobs')} className="flex items-center gap-1 text-sm font-semibold text-uber-gray-500 hover:text-black transition-colors mb-8">
           <ChevronLeft className="w-4 h-4" /> My Jobs

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
+import { Helmet } from 'react-helmet-async';
 import { Loader2, ExternalLink, CheckCircle } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { Input } from '../components/ui/input';
@@ -79,6 +80,12 @@ export default function WorkerRegister() {
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center p-6">
+      <Helmet>
+        <title>Become a Home Service Pro | Join Lintel</title>
+        <meta name="description" content="Join Lintel as a home service professional. Earn money on your schedule providing gutter cleaning, pressure washing, window cleaning, and more to homeowners in Montgomery County, MD." />
+        <meta name="keywords" content="home service jobs montgomery county md, gig work bethesda md, earn money home services, become a home service pro, lintel worker application, flexible work rockville md" />
+        <link rel="canonical" href="https://uselintel.pro/worker/register" />
+      </Helmet>
       <div className="w-full max-w-sm">
         <Link to="/login" className="text-sm text-uber-gray-400 hover:text-black transition-colors">← Back</Link>
         <h1 className="text-3xl font-black text-black mt-6 mb-1">Join as a Pro</h1>

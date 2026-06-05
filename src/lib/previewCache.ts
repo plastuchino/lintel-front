@@ -1,7 +1,7 @@
 import type { ServiceType } from './api';
 
 const CACHE_KEY = 'lintel_preview_quote';
-const TTL_MS = 30 * 60 * 1000;
+const TTL_MS = 48 * 60 * 60 * 1000;
 
 interface PreviewCache {
   address: string;

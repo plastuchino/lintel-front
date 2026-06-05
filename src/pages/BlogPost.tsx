@@ -110,7 +110,41 @@ export default function BlogPost() {
       <Helmet>
         <title>{post.title} | Lintel</title>
         <meta name="description" content={post.excerpt} />
+        <meta name="keywords" content={`${post.category.toLowerCase()}, lintel blog, home services bethesda md, home maintenance montgomery county, ${post.title.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(' ').slice(0, 5).join(', ')}`} />
+        <link rel="canonical" href={`https://uselintel.pro/blog/${post.slug}`} />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={post.title} />
+        <meta property="og:description" content={post.excerpt} />
+        <meta property="og:url" content={`https://uselintel.pro/blog/${post.slug}`} />
+        <meta property="og:image" content="https://uselintel.pro/og-image.png" />
+        <meta property="og:site_name" content="Lintel" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={post.title} />
+        <meta name="twitter:description" content={post.excerpt} />
+        <meta name="twitter:image" content="https://uselintel.pro/og-image.png" />
       </Helmet>
+
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: post.title,
+        description: post.excerpt,
+        datePublished: post.date,
+        author: { '@type': 'Organization', name: 'Lintel' },
+        publisher: { '@type': 'Organization', name: 'Lintel', url: 'https://uselintel.pro', logo: { '@type': 'ImageObject', url: 'https://uselintel.pro/android-chrome-512x512.png' } },
+        image: 'https://uselintel.pro/og-image.png',
+        url: `https://uselintel.pro/blog/${post.slug}`,
+        mainEntityOfPage: { '@type': 'WebPage', '@id': `https://uselintel.pro/blog/${post.slug}` },
+      }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://uselintel.pro/' },
+          { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://uselintel.pro/blog' },
+          { '@type': 'ListItem', position: 3, name: post.title, item: `https://uselintel.pro/blog/${post.slug}` },
+        ],
+      }) }} />
 
       {/* Nav */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-black">

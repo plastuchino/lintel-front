@@ -596,7 +596,43 @@ export default function Blog() {
       <Helmet>
         <title>Home Service Tips &amp; Guides | Lintel Blog</title>
         <meta name="description" content="Tips, guides, and honest advice for Bethesda and Rockville homeowners. Learn about gutter cleaning, pressure washing, window cleaning costs, and more." />
+        <meta name="keywords" content="home service tips bethesda, gutter cleaning cost maryland, pressure washing driveway maryland, window cleaning bethesda md, home maintenance guides montgomery county, lintel blog" />
+        <link rel="canonical" href="https://uselintel.pro/blog" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Home Service Tips &amp; Guides | Lintel Blog" />
+        <meta property="og:description" content="Tips, guides, and honest advice for Bethesda and Rockville homeowners. Learn about gutter cleaning, pressure washing, window cleaning costs, and more." />
+        <meta property="og:url" content="https://uselintel.pro/blog" />
+        <meta property="og:image" content="https://uselintel.pro/og-image.png" />
+        <meta property="og:site_name" content="Lintel" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Home Service Tips &amp; Guides | Lintel Blog" />
+        <meta name="twitter:description" content="Tips, guides, and honest advice for Bethesda and Rockville homeowners." />
+        <meta name="twitter:image" content="https://uselintel.pro/og-image.png" />
       </Helmet>
+
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Blog',
+        name: 'Lintel Blog',
+        description: 'Tips, guides, and honest advice for Bethesda and Rockville homeowners.',
+        url: 'https://uselintel.pro/blog',
+        publisher: { '@type': 'Organization', name: 'Lintel', url: 'https://uselintel.pro', logo: { '@type': 'ImageObject', url: 'https://uselintel.pro/android-chrome-512x512.png' } },
+        blogPost: BLOG_POSTS.map(p => ({
+          '@type': 'BlogPosting',
+          headline: p.title,
+          description: p.excerpt,
+          url: `https://uselintel.pro/blog/${p.slug}`,
+          datePublished: p.date,
+        })),
+      }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://uselintel.pro/' },
+          { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://uselintel.pro/blog' },
+        ],
+      }) }} />
 
       {/* Nav */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-black">

@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { Helmet } from 'react-helmet-async';
 import { Building2, CheckCircle, Loader2, Circle, ExternalLink, LogOut } from 'lucide-react';
 import { WorkerLayout } from '../components/WorkerLayout';
 import { useAuthStore } from '../store/authStore';
@@ -48,6 +49,10 @@ export default function WorkerPendingDashboard() {
 
   return (
     <WorkerLayout>
+      <Helmet>
+        <title>Application Under Review | Lintel</title>
+        <meta name="description" content="Your Lintel worker application is under review. Complete your profile setup while we verify your background check and onboard you to the platform." />
+      </Helmet>
       <div className="px-8 py-8 max-w-5xl">
         {/* Hero */}
         <p className="text-[10px] font-bold uppercase tracking-widest text-uber-gray-400 mb-3">

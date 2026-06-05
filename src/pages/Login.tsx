@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
+import { Helmet } from 'react-helmet-async';
 import { useAuthStore } from '../store/authStore';
 import { auth } from '../lib/api';
 import { toast } from '../hooks/useToast';
@@ -39,6 +40,12 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col lg:flex-row">
+      <Helmet>
+        <title>Sign In to Book Home Services | Lintel</title>
+        <meta name="description" content="Sign in to Lintel to book vetted home service professionals in Bethesda, Rockville, and Montgomery County, MD. Gutter cleaning, pressure washing, window cleaning, and more." />
+        <link rel="canonical" href="https://uselintel.pro/login" />
+      </Helmet>
+
       {/* Left — branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-black flex-col justify-between p-16">
       <div className='w-2/6 border p-3 rounded-lg'>

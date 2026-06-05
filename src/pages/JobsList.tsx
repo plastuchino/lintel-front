@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { jobs, plans } from '../lib/api';
 import type { Job, RecurringPlan } from '../lib/api';
@@ -142,6 +143,10 @@ export default function JobsList() {
 
   return (
     <div className="min-h-screen bg-white pt-16">
+      <Helmet>
+        <title>My Jobs | Lintel</title>
+        <meta name="description" content="View and manage your home service bookings on Lintel. Track upcoming jobs, review past services, and manage recurring service plans." />
+      </Helmet>
       <div className="max-w-2xl mx-auto px-6 py-10">
         <Link to="/book" className="inline-flex items-center gap-1.5 text-sm font-semibold text-uber-gray-500 hover:text-black transition-colors mb-6">
           <ArrowLeft className="w-4 h-4" />

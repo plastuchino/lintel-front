@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Camera, Loader2, CheckCircle, ExternalLink, LogOut, DollarSign } from 'lucide-react';
 import { WorkerLayout } from '../components/WorkerLayout';
@@ -96,6 +97,10 @@ export default function WorkerSettings() {
 
   return (
     <WorkerLayout>
+      <Helmet>
+        <title>Worker Account Settings | Lintel</title>
+        <meta name="description" content="Manage your Lintel worker account settings. Update your profile photo, view your Stripe payout status, and configure your account preferences." />
+      </Helmet>
       <div className="max-w-xl px-8 py-8">
         <h1 className="text-2xl font-black text-black mb-1">Settings</h1>
         <p className="text-uber-gray-400 text-sm mb-8">Manage your profile and account preferences.</p>

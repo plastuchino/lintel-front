@@ -6,11 +6,13 @@ interface Props {
   onChange: (interval: null | 3 | 6 | 12) => void;
 }
 
+const FIRST_JOB_DISCOUNT = 0.05;
+
 const OPTIONS = [
-  { interval: null,  label: 'One-time',        discount: 0,    badge: null },
-  { interval: 3,     label: 'Every 3 months',  discount: 0.25, badge: null },
-  { interval: 6,     label: 'Every 6 months',  discount: 0.20, badge: 'Most Popular' },
-  { interval: 12,    label: 'Every 12 months', discount: 0.15, badge: null },
+  { interval: null,  label: 'One-time',        ongoingDiscount: 0,    badge: null },
+  { interval: 3,     label: 'Every 3 months',  ongoingDiscount: 0.25, badge: null },
+  { interval: 6,     label: 'Every 6 months',  ongoingDiscount: 0.20, badge: 'Most Popular' },
+  { interval: 12,    label: 'Every 12 months', ongoingDiscount: 0.15, badge: null },
 ] as const;
 
 export function FrequencySelector({ basePrice, value, onChange }: Props) {
@@ -20,7 +22,7 @@ export function FrequencySelector({ basePrice, value, onChange }: Props) {
       <div className="grid grid-cols-2 gap-2">
         {OPTIONS.map((opt) => {
           const selected = value === opt.interval;
-          const discountedPrice = basePrice * (1 - opt.discount);
+          const firstJobPrice = basePrice * (1 - FIRST_JOB_DISCOUNT);
           const isMostPopular = opt.badge === 'Most Popular';
 
           return (
@@ -52,12 +54,12 @@ export function FrequencySelector({ basePrice, value, onChange }: Props) {
                 {opt.label}
               </span>
 
-              {opt.discount > 0 ? (
+              {opt.ongoingDiscount > 0 ? (
                 <span className={cn(
                   'mt-1 text-[11px] font-bold',
                   selected ? 'text-uber-green' : 'text-uber-green/80',
                 )}>
-                  {Math.round(opt.discount * 100)}% off — {formatCurrency(discountedPrice)}
+                  5% off today · {Math.round(opt.ongoingDiscount * 100)}% off after — {formatCurrency(firstJobPrice)}
                 </span>
               ) : (
                 <span className={cn(

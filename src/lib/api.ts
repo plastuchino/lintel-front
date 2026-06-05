@@ -211,6 +211,7 @@ export const admin = {
     resolution: 'cancelled' | 'charged',
     adminResponse: string
   ) => api.post<{ success: boolean }>(`/admin/disputes/${jobId}/resolve`, { serviceType, resolution, adminResponse }),
+  getProspects: () => api.get<AdminProspect[]>('/admin/prospects'),
 };
 
 export interface RecurringPlan {
@@ -245,3 +246,29 @@ export const users = {
     api.put('/users/profile', data),
   getSavedCard: () => api.get<{ card: SavedCard | null }>('/users/saved-card'),
 };
+
+export interface AdminProspect {
+  uuid: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  serviceTypes: ServiceType[];
+  status: 'new' | 'contacted' | 'converted';
+  source: string;
+  createdAt: string;
+  updatedAt: string;
+  convertedAt?: string;
+}
+
+export const prospects = {
+  submit: (data: {
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+    serviceTypes: ServiceType[];
+    captchaToken: string;
+  }) => api.post<{ uuid: string }>('/prospects', data),
+};
+

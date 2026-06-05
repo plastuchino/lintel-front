@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Helmet } from 'react-helmet-async';
 import { MapPin, CheckCircle, Loader2, Tag, KeyRound, AlertTriangle, X, Calendar, FileText, Clock, History, DollarSign } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { jobs, workers } from '../lib/api';
@@ -284,6 +285,10 @@ export default function WorkerDashboard() {
 
   return (
     <WorkerLayout>
+      <Helmet>
+        <title>Worker Dashboard | Lintel</title>
+        <meta name="description" content="Manage your Lintel home service jobs. View open jobs, accept new bookings, mark work complete, and track your earnings — all in one place." />
+      </Helmet>
     <div className="max-w-2xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8 flex items-start justify-between">
