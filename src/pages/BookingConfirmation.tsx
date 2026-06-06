@@ -42,12 +42,6 @@ export default function BookingConfirmation() {
       navigate('/jobs', { replace: true });
     } else {
       reset();
-      if (typeof window.gtag === 'function') {
-        window.gtag('event', 'conversion', {
-          send_to: 'AW-18193036616/wK5ICJn64rccEMjqjuND',
-          transaction_id: '',
-        });
-      }
     }
   }, [state, navigate, reset]);
 

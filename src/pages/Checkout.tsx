@@ -87,11 +87,12 @@ export default function Checkout() {
   const baseTotal = subtotal - bundleDiscountAmount;
 
   const FIRST_JOB_DISCOUNT_RATE = 0.05;
+  const isTestPromo = promoCode === 'TESTSEBANOW';
   const recurringDiscountRate = (!hasBundle && recurringInterval) ? FIRST_JOB_DISCOUNT_RATE : 0;
   const recurringDiscountAmount = baseTotal * recurringDiscountRate;
-  const total = baseTotal - recurringDiscountAmount;
+  const total = isTestPromo ? 1.00 : baseTotal - recurringDiscountAmount;
 
-  const promoRecurringConflict = !!promoCode && !!recurringInterval;
+  const promoRecurringConflict = !!promoCode && !!recurringInterval && !isTestPromo;
 
   const applyPromo = () => {
     if (!promoInput.trim()) return;
@@ -165,6 +166,15 @@ export default function Checkout() {
           : "We're finding a pro for you.",
       });
 
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'conversion', {
+          send_to: 'AW-18193036616/63m8CKPNh7ocEMjqjuND',
+          value: total,
+          currency: 'USD',
+          transaction_id: jobId,
+        });
+      }
+
       const confirmationState = {
         jobId,
         services: selectedServiceObjects.map((s) => ({
@@ -176,17 +186,6 @@ export default function Checkout() {
         notes: notes || '',
         hasBundle,
       };
-
-      // This is the final tag
-
-      // gtag('event', 'conversion', {
-      //   'send_to': 'AW-18193036616/wK5ICJn64rccEMjqjuND',
-      //   'transaction_id': ''
-
-      // });
-
-
-
 
       navigate('/booking-confirmation', { state: confirmationState });
     } finally {
@@ -256,13 +255,22 @@ export default function Checkout() {
                 </div>
               </>
             )}
-            {recurringDiscountAmount > 0 && (
+            {recurringDiscountAmount > 0 && !isTestPromo && (
               <div className="flex items-center justify-between text-sm">
                 <span className="flex items-center gap-1.5 font-semibold text-uber-green">
                   <Sparkles className="w-3.5 h-3.5" />
                   Recurring discount (5% — first visit)
                 </span>
                 <span className="font-semibold text-uber-green">−{formatCurrency(recurringDiscountAmount)}</span>
+              </div>
+            )}
+            {isTestPromo && (
+              <div className="flex items-center justify-between text-sm">
+                <span className="flex items-center gap-1.5 font-semibold text-uber-green">
+                  <Tag className="w-3.5 h-3.5" />
+                  Promo discount
+                </span>
+                <span className="font-semibold text-uber-green">−{formatCurrency(baseTotal - 1)}</span>
               </div>
             )}
             <div className="flex items-center justify-between pt-1">
@@ -324,7 +332,7 @@ export default function Checkout() {
                   onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
                   placeholder="Enter promo code"
                   className="font-mono uppercase"
-                  maxLength={10}
+                  maxLength={30}
                 />
                 <button
                   onClick={applyPromo}
