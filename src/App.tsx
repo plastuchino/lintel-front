@@ -1,14 +1,12 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { HelmetProvider } from 'react-helmet-async';
-import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { Toaster } from './components/Toaster';
 import { useAuthStore } from './store/authStore';
-import { useBookingStore } from './store/bookingStore';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Home from './pages/Home';
@@ -30,8 +28,6 @@ import BookingConfirmation from './pages/BookingConfirmation';
 import ServiceGutterCleaning from './pages/ServiceGutterCleaning';
 import ServicePressureWashing from './pages/ServicePressureWashing';
 import ServiceWindowCleaning from './pages/ServiceWindowCleaning';
-
-const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string;
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 30000 } },
@@ -78,10 +74,8 @@ declare function gtag(...args: unknown[]): void;
 
 function Layout({ children }: { children: React.ReactNode }) {
   const { user } = useAuthStore();
-  const { setCaptchaToken } = useBookingStore();
   const location = useLocation();
   const isWorkerRoute = location.pathname.startsWith('/worker/');
-  const turnstileRef = useRef<TurnstileInstance>(undefined);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
@@ -99,17 +93,6 @@ function Layout({ children }: { children: React.ReactNode }) {
       {user && !isWorkerRoute && <Header />}
       {children}
       {!user && !isWorkerRoute && <Footer />}
-      {!user && (
-        <Turnstile
-          ref={turnstileRef}
-          siteKey={TURNSTILE_SITE_KEY}
-          onSuccess={(token) => setCaptchaToken(token)}
-          onError={() => {}}
-          onExpire={() => turnstileRef.current?.reset()}
-          options={{ size: 'invisible' }}
-          style={{ display: 'none' }}
-        />
-      )}
     </>
   );
 }

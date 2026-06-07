@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { CheckCircle, Loader2, ChevronRight, ArrowRight } from 'lucide-react';
-import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile';
 import { useBookingStore } from '../store/bookingStore';
 import { AddressSearch } from '../components/AddressSearch';
 import { MapView } from '../components/MapView';
@@ -12,7 +11,6 @@ import type { ServiceType, Service } from '../lib/api';
 import { getPreviewCache, setPreviewCache, clearPreviewCache } from '../lib/previewCache';
 import logo from '../assets/logo.jpeg';
 
-const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string;
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string;
 const TTL_MS = 48 * 60 * 60 * 1000;
 
@@ -41,12 +39,7 @@ function formatCountdown(ms: number): string {
 
 export default function QuotePreview() {
   const navigate = useNavigate();
-  const {
-    address, setAddress, setCoordinates,
-    captchaToken: prewarmedToken,
-    captchaTokenAt: prewarmedTokenAt,
-    clearCaptchaToken,
-  } = useBookingStore();
+  const { address, setAddress, setCoordinates } = useBookingStore();
 
   const [phase, setPhase] = useState<'input' | 'loading' | 'quote' | 'expired'>('input');
   const [inputVal, setInputVal] = useState(address);
@@ -66,17 +59,9 @@ export default function QuotePreview() {
   const [leadEmail, setLeadEmail] = useState('');
   const [leadPhone, setLeadPhone] = useState('');
   const [leadAddress, setLeadAddress] = useState(address);
-  const [leadCaptchaToken, setLeadCaptchaToken] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
-  const leadTurnstileRef = useRef<TurnstileInstance>(undefined);
-
-  // Turnstile state (for quote fetch)
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const [pendingAddress, setPendingAddress] = useState<string | null>(null);
-  const [pendingCoords, setPendingCoords] = useState<{ lat: number; lng: number } | null>(null);
-  const turnstileRef = useRef<TurnstileInstance>(undefined);
 
   // Load service list for card rendering
   useEffect(() => {
@@ -115,11 +100,11 @@ export default function QuotePreview() {
     return () => clearInterval(tick);
   }, [phase, expiresAt]);
 
-  const fetchQuote = useCallback(async (addr: string, token: string, geocoords?: { lat: number; lng: number } | null) => {
+  const fetchQuote = useCallback(async (addr: string, geocoords?: { lat: number; lng: number } | null) => {
     setPhase('loading');
     setLoadError(null);
     try {
-      const res = await jobs.getQuotePreview(addr, token, geocoords ?? undefined);
+      const res = await jobs.getQuotePreview(addr, geocoords ?? undefined);
       const { quotes: q, lat, lng } = res.data;
       const c = { lat, lng };
       const exp = setPreviewCache(addr, q as Record<ServiceType, number>, c);
@@ -139,19 +124,8 @@ export default function QuotePreview() {
         setLoadError('Something went wrong. Please try again.');
       }
       setPhase('input');
-      turnstileRef.current?.reset();
-      setCaptchaToken(null);
     }
   }, []);
-
-  // Fire API call once we have both address and CAPTCHA token
-  useEffect(() => {
-    if (pendingAddress && captchaToken) {
-      fetchQuote(pendingAddress, captchaToken, pendingCoords);
-      setPendingAddress(null);
-      setPendingCoords(null);
-    }
-  }, [pendingAddress, captchaToken, pendingCoords, fetchQuote]);
 
   const handleConfirm = async (addr: string) => {
     if (!addr.trim()) return;
@@ -174,19 +148,7 @@ export default function QuotePreview() {
     setPhase('loading');
     const clientCoords = await geocodeAddress(addr);
     if (clientCoords) setCoords(clientCoords);
-    setPendingCoords(clientCoords);
-
-    // Use pre-warmed token from landing page if fresh (< 4 min old)
-    const FOUR_MIN_MS = 4 * 60 * 1000;
-    if (prewarmedToken && prewarmedTokenAt && Date.now() - prewarmedTokenAt < FOUR_MIN_MS) {
-      clearCaptchaToken();
-      setCaptchaToken(prewarmedToken);
-      setPendingAddress(addr);
-      return;
-    }
-
-    // No fresh pre-warmed token — wait for in-page Turnstile widget
-    setPendingAddress(addr);
+    fetchQuote(addr, clientCoords);
   };
 
   const handleServiceClick = (serviceId: ServiceType) => {
@@ -208,7 +170,6 @@ export default function QuotePreview() {
 
   const handleLeadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!leadCaptchaToken) return;
     setIsSubmitting(true);
     setSubmitError(null);
     try {
@@ -218,13 +179,10 @@ export default function QuotePreview() {
         phone: leadPhone,
         address: leadAddress,
         serviceTypes: Array.from(selectedServices),
-        captchaToken: leadCaptchaToken,
       });
       setSubmitted(true);
     } catch {
       setSubmitError('Something went wrong. Please try again.');
-      leadTurnstileRef.current?.reset();
-      setLeadCaptchaToken(null);
     } finally {
       setIsSubmitting(false);
     }
@@ -237,9 +195,7 @@ export default function QuotePreview() {
   const handleRefresh = () => {
     clearPreviewCache();
     setQuotes(null);
-    setCaptchaToken(null);
     setPhase('input');
-    turnstileRef.current?.reset();
   };
 
   const progressPct = Math.max(0, Math.min(100, (remaining / TTL_MS) * 100));
@@ -299,9 +255,7 @@ export default function QuotePreview() {
             <div className="mb-6 rounded-xl border border-uber-gray-100 bg-uber-gray-50 overflow-hidden">
               <div className="flex items-center gap-2.5 px-4 pt-3 pb-2">
                 <Loader2 className="w-3.5 h-3.5 animate-spin text-black flex-shrink-0" />
-                <p className="text-sm font-semibold text-black">
-                  {!captchaToken ? 'Verifying…' : 'Analyzing your property…'}
-                </p>
+                <p className="text-sm font-semibold text-black">Analyzing your property…</p>
               </div>
               <div className="mx-4 mb-3 h-1 bg-uber-gray-200 rounded-full overflow-hidden">
                 <div className="h-full w-1/3 bg-black rounded-full animate-progress-slide" />
@@ -317,16 +271,6 @@ export default function QuotePreview() {
             {phase === 'loading' ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Get My Quote <ChevronRight className="w-5 h-5" /></>}
           </button>
 
-          {/* Turnstile widget — invisible, fires automatically */}
-          <Turnstile
-            ref={turnstileRef}
-            siteKey={TURNSTILE_SITE_KEY}
-            onSuccess={(token) => setCaptchaToken(token)}
-            onError={() => { setLoadError('Verification failed. Please try again.'); setPhase('input'); }}
-            onExpire={() => { setLoadError('Verification expired. Please try again.'); setPhase('input'); turnstileRef.current?.reset(); setCaptchaToken(null); }}
-            options={{ size: 'invisible' }}
-            className="mt-4"
-          />
         </div>
 
         {/* Right panel — MapView */}
@@ -466,18 +410,9 @@ export default function QuotePreview() {
                     <p className="text-sm text-red-600">{submitError}</p>
                   )}
 
-                  <Turnstile
-                    ref={leadTurnstileRef}
-                    siteKey={TURNSTILE_SITE_KEY}
-                    onSuccess={(token) => setLeadCaptchaToken(token)}
-                    onError={() => { setSubmitError('Verification failed. Please try again.'); setLeadCaptchaToken(null); }}
-                    onExpire={() => { setLeadCaptchaToken(null); leadTurnstileRef.current?.reset(); }}
-                    options={{ size: 'invisible' }}
-                  />
-
                   <button
                     type="submit"
-                    disabled={!leadName.trim() || !leadEmail.trim() || !leadPhone.trim() || !leadCaptchaToken || isSubmitting}
+                    disabled={!leadName.trim() || !leadEmail.trim() || !leadPhone.trim() || isSubmitting}
                     className="w-full h-14 bg-black text-white font-bold text-base rounded-xl flex items-center justify-center gap-2 hover:bg-uber-gray-800 transition-colors disabled:bg-uber-gray-200 disabled:text-uber-gray-400 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Book Now <ArrowRight className="w-5 h-5" /></>}

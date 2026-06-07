@@ -13,10 +13,6 @@ interface BookingStore {
   currentJobId: string | null;
   quotes: Partial<Record<ServiceType, number>>;
   quotesReady: boolean;
-  /** Pre-warmed Turnstile token from the landing page (not persisted). */
-  captchaToken: string | undefined;
-  /** Timestamp (ms) when captchaToken was received. */
-  captchaTokenAt: number | undefined;
   toggleService: (service: ServiceType) => void;
   setSelectedServices: (services: ServiceType[]) => void;
   setAddress: (address: string, confirmed?: boolean) => void;
@@ -28,8 +24,6 @@ interface BookingStore {
   setCurrentJobId: (id: string) => void;
   setQuotes: (quotes: Partial<Record<ServiceType, number>>) => void;
   setQuotesReady: (ready: boolean) => void;
-  setCaptchaToken: (token: string) => void;
-  clearCaptchaToken: () => void;
   reset: () => void;
 }
 
@@ -45,8 +39,6 @@ export const useBookingStore = create<BookingStore>((set) => ({
   currentJobId: null,
   quotes: {},
   quotesReady: false,
-  captchaToken: undefined,
-  captchaTokenAt: undefined,
   toggleService: (service) =>
     set((state) => ({
       selectedServices: state.selectedServices.includes(service)
@@ -64,8 +56,6 @@ export const useBookingStore = create<BookingStore>((set) => ({
   setCurrentJobId: (id) => set({ currentJobId: id }),
   setQuotes: (quotes) => set({ quotes, quotesReady: true }),
   setQuotesReady: (ready) => set({ quotesReady: ready }),
-  setCaptchaToken: (token) => set({ captchaToken: token, captchaTokenAt: Date.now() }),
-  clearCaptchaToken: () => set({ captchaToken: undefined, captchaTokenAt: undefined }),
   reset: () =>
     set({
       selectedServices: [],
