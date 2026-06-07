@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { ChevronRight } from 'lucide-react';
 import logo from '../assets/logo.jpeg';
 import { ServiceQuoteCTA } from '../components/ServiceQuoteCTA';
 import window_image from '../assets/site_asset_window.png';
@@ -117,197 +116,181 @@ export default function ServiceWindowCleaning() {
           <h1 className="text-4xl lg:text-6xl font-black text-white leading-tight uppercase mb-10 max-w-xl">
             Window Cleaning in<br />Montgomery County, MD
           </h1>
-          <div className="flex items-center gap-6 flex-wrap">
-            <a
-              href="#get-a-price"
-              className="inline-flex items-center gap-2 px-8 h-12 bg-[#008060] text-white font-black text-[12px] tracking-[0.2em] uppercase hover:bg-[#006b50] transition-colors"
-            >
-              GET A PRICE
-              <ChevronRight className="w-4 h-4" />
-            </a>
-            <p className="text-[10px] font-mono text-white/35 tracking-[0.15em] uppercase">or scroll to see how it works ↓</p>
-          </div>
+          <p className="text-[10px] font-mono text-white/35 tracking-[0.15em] uppercase">scroll to see how it works ↓</p>
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="max-w-4xl mx-auto px-6 py-14 border-b border-black/10">
-        <p className="text-[10px] font-mono text-black/35 tracking-[0.2em] uppercase mb-2">Process</p>
-        <h2 className="text-xl font-black uppercase mb-10">How It Works</h2>
-        <div className="space-y-10">
-          <div className="flex gap-6">
-            <span className="flex-shrink-0 text-3xl font-black text-[#008060] leading-none w-8">①</span>
-            <div>
-              <p className="text-sm font-black text-black uppercase mb-1">Enter your address</p>
-              <p className="text-sm text-black/60 leading-relaxed">Exact price, not a range. 30 seconds.</p>
-            </div>
-          </div>
-          <div className="flex gap-6">
-            <span className="flex-shrink-0 text-3xl font-black text-[#008060] leading-none w-8">②</span>
-            <div>
-              <p className="text-sm font-black text-black uppercase mb-1">Pick a time</p>
-              <p className="text-sm text-black/60 leading-relaxed">We match you with a background-checked local pro.</p>
-            </div>
-          </div>
-          <div className="flex gap-6">
-            <span className="flex-shrink-0 text-3xl font-black text-[#008060] leading-none w-8">③</span>
-            <div className="flex-1 grid lg:grid-cols-2 gap-6">
-              <div>
-                <p className="text-sm font-black text-black uppercase mb-1">They do the job</p>
-                <p className="text-sm text-black/60 leading-relaxed">Check for streaks. If any pane needs a second pass, the pro handles it before you confirm.</p>
-              </div>
-              <div className="border-l-2 border-[#008060] pl-5">
-                <p className="text-sm text-black/70 leading-relaxed italic mb-3">"I loved that I had to approve the house before confirming. Felt totally in control."</p>
-                <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest">— Justin, Bethesda</p>
-              </div>
-            </div>
-          </div>
+      {/* Below-hero: mobile CTA + two-column content/sidebar */}
+      <div className="max-w-7xl mx-auto">
+        {/* Mobile CTA — stacked directly below hero, hidden on desktop */}
+        <div className="lg:hidden bg-[#0d0d0d] px-6 py-10">
+          <ServiceQuoteCTA serviceType="window-cleaning" className="w-full" />
         </div>
-      </section>
 
-      {/* Debra pull-quote */}
-      <section className="bg-black/[0.02] border-b border-black/10">
-        <div className="max-w-4xl mx-auto px-6 py-12 text-center">
-          <p className="text-xl lg:text-2xl font-black text-black leading-snug max-w-2xl mx-auto mb-4">"Fast, professional, and honestly way cheaper than I expected."</p>
-          <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest">— Debra, Bethesda</p>
-        </div>
-      </section>
-
-      {/* Anchored quote form */}
-      <section id="get-a-price" className="bg-[#0d0d0d]">
-        <div className="max-w-6xl mx-auto px-6 py-16 flex flex-col lg:flex-row lg:items-center gap-10 lg:gap-16">
-          <div className="lg:flex-shrink-0 lg:max-w-xs">
-            <p className="text-[10px] font-mono text-white/35 tracking-[0.2em] uppercase mb-3">Get a price</p>
-            <h2 className="text-3xl font-black text-white uppercase mb-8">Exact Price.<br />Not a Range.</h2>
-          </div>
-          <div className="flex-1 flex items-center justify-center lg:justify-end">
-            <ServiceQuoteCTA serviceType="window-cleaning" className="w-full max-w-[520px]" />
-          </div>
-        </div>
-      </section>
-
-      {/* Body copy */}
-      <section className="max-w-4xl mx-auto px-6 py-14 border-b border-black/10">
-        <div className="grid md:grid-cols-2 gap-12">
+        <div className="lg:grid lg:grid-cols-[1fr_380px] lg:items-start">
+          {/* Left: content sections */}
           <div>
-            <h2 className="text-xl font-black uppercase mb-4">Why Windows in Montgomery County Get Dirty Fast</h2>
-            <p className="text-sm text-black/60 leading-relaxed mb-4">
-              Montgomery County's combination of heavy tree coverage, seasonal pollen, and proximity to DC's traffic corridor means windows accumulate a distinctive grey-green film that becomes visible within weeks of cleaning. In spring, oak and maple pollen coats every horizontal surface — windows included. By fall, it's airborne soot and organic debris from leaf drop.
-            </p>
-            <p className="text-sm text-black/60 leading-relaxed mb-4">
-              Hard water is the other culprit. Montgomery County's water supply leaves mineral deposits on glass each time rain dries on the surface. Over months, those deposits build up into a haze that isn't removable with standard household cleaners. Professional cleaning with purified water removes the deposits and prevents new ones from forming immediately.
-            </p>
-            <p className="text-sm text-black/60 leading-relaxed">
-              We serve all of Montgomery County: Bethesda, Rockville, Chevy Chase, Potomac, Silver Spring, Gaithersburg, Germantown, and North Bethesda.
-            </p>
-          </div>
-          <div>
-            <h2 className="text-xl font-black uppercase mb-4">How We Clean</h2>
-            <div className="space-y-3">
-              {[
-                ['Purified water system', 'Deionized water dries spot-free — no mineral residue, no streaks.'],
-                ['Water-fed pole', 'Extendable up to 35 ft — covers most 2-story homes without ladders.'],
-                ['Interior & exterior bookable separately', 'Book one side or both. Priced individually.'],
-                ['All window types', 'Double-hung, casement, sliding, picture windows. Screens cleaned on request.'],
-                ['Fully insured', '$1M general liability on every job.'],
-                ['Pay after confirmation', 'Inspect the results before payment is released.'],
-              ].map(([title, desc]) => (
-                <div key={title} className="flex gap-3">
-                  <div className="w-1.5 h-1.5 bg-[#008060] rounded-full mt-1.5 flex-shrink-0" />
+            {/* How It Works */}
+            <section className="px-6 py-14 border-b border-black/10">
+              <p className="text-[10px] font-mono text-black/35 tracking-[0.2em] uppercase mb-2">Process</p>
+              <h2 className="text-xl font-black uppercase mb-10">How It Works</h2>
+              <div className="space-y-10">
+                <div className="flex gap-6">
+                  <span className="flex-shrink-0 text-3xl font-black text-[#008060] leading-none w-8">①</span>
                   <div>
-                    <p className="text-sm font-bold text-black">{title}</p>
-                    <p className="text-xs text-black/50 leading-relaxed">{desc}</p>
+                    <p className="text-sm font-black text-black uppercase mb-1">Enter your address</p>
+                    <p className="text-sm text-black/60 leading-relaxed">Exact price, not a range. 30 seconds.</p>
                   </div>
                 </div>
-              ))}
+                <div className="flex gap-6">
+                  <span className="flex-shrink-0 text-3xl font-black text-[#008060] leading-none w-8">②</span>
+                  <div>
+                    <p className="text-sm font-black text-black uppercase mb-1">Pick a time</p>
+                    <p className="text-sm text-black/60 leading-relaxed">We match you with a background-checked local pro.</p>
+                  </div>
+                </div>
+                <div className="flex gap-6">
+                  <span className="flex-shrink-0 text-3xl font-black text-[#008060] leading-none w-8">③</span>
+                  <div className="flex-1 grid lg:grid-cols-2 gap-6">
+                    <div>
+                      <p className="text-sm font-black text-black uppercase mb-1">They do the job</p>
+                      <p className="text-sm text-black/60 leading-relaxed">Check for streaks. If any pane needs a second pass, the pro handles it before you confirm.</p>
+                    </div>
+                    <div className="border-l-2 border-[#008060] pl-5">
+                      <p className="text-sm text-black/70 leading-relaxed italic mb-3">"I loved that I had to approve the house before confirming. Felt totally in control."</p>
+                      <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest">— Justin, Bethesda</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Debra pull-quote */}
+            <section className="bg-black/[0.02] border-b border-black/10">
+              <div className="px-6 py-12 text-center">
+                <p className="text-xl lg:text-2xl font-black text-black leading-snug max-w-2xl mx-auto mb-4">"Fast, professional, and honestly way cheaper than I expected."</p>
+                <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest">— Debra, Bethesda</p>
+              </div>
+            </section>
+
+            {/* Body copy */}
+            <section className="px-6 py-14 border-b border-black/10">
+              <div className="grid md:grid-cols-2 gap-12">
+                <div>
+                  <h2 className="text-xl font-black uppercase mb-4">Why Windows in Montgomery County Get Dirty Fast</h2>
+                  <p className="text-sm text-black/60 leading-relaxed mb-4">
+                    Montgomery County's combination of heavy tree coverage, seasonal pollen, and proximity to DC's traffic corridor means windows accumulate a distinctive grey-green film that becomes visible within weeks of cleaning. In spring, oak and maple pollen coats every horizontal surface — windows included. By fall, it's airborne soot and organic debris from leaf drop.
+                  </p>
+                  <p className="text-sm text-black/60 leading-relaxed mb-4">
+                    Hard water is the other culprit. Montgomery County's water supply leaves mineral deposits on glass each time rain dries on the surface. Over months, those deposits build up into a haze that isn't removable with standard household cleaners. Professional cleaning with purified water removes the deposits and prevents new ones from forming immediately.
+                  </p>
+                  <p className="text-sm text-black/60 leading-relaxed">
+                    We serve all of Montgomery County: Bethesda, Rockville, Chevy Chase, Potomac, Silver Spring, Gaithersburg, Germantown, and North Bethesda.
+                  </p>
+                </div>
+                <div>
+                  <h2 className="text-xl font-black uppercase mb-4">How We Clean</h2>
+                  <div className="space-y-3">
+                    {[
+                      ['Purified water system', 'Deionized water dries spot-free — no mineral residue, no streaks.'],
+                      ['Water-fed pole', 'Extendable up to 35 ft — covers most 2-story homes without ladders.'],
+                      ['Interior & exterior bookable separately', 'Book one side or both. Priced individually.'],
+                      ['All window types', 'Double-hung, casement, sliding, picture windows. Screens cleaned on request.'],
+                      ['Fully insured', '$1M general liability on every job.'],
+                      ['Pay after confirmation', 'Inspect the results before payment is released.'],
+                    ].map(([title, desc]) => (
+                      <div key={title} className="flex gap-3">
+                        <div className="w-1.5 h-1.5 bg-[#008060] rounded-full mt-1.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-sm font-bold text-black">{title}</p>
+                          <p className="text-xs text-black/50 leading-relaxed">{desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Pricing */}
+            <section className="px-6 py-14 border-b border-black/10">
+              <h2 className="text-xl font-black uppercase mb-6">Pricing</h2>
+              <div className="border border-black/10 overflow-hidden">
+                <div className="grid grid-cols-3 bg-black text-white">
+                  <div className="px-5 py-3 text-[11px] font-bold tracking-[0.1em] uppercase">Service</div>
+                  <div className="px-5 py-3 text-[11px] font-bold tracking-[0.1em] uppercase">Starting Price</div>
+                  <div className="px-5 py-3 text-[11px] font-bold tracking-[0.1em] uppercase">Typical Time</div>
+                </div>
+                {[
+                  ['Exterior only', '$250', '60–90 min'],
+                  ['Interior only', '$250', '60–90 min'],
+                  ['Exterior + Interior', '$450', '2–3 hrs'],
+                ].map(([service, price, time], i) => (
+                  <div key={service} className={`grid grid-cols-3 border-t border-black/10 ${i % 2 === 1 ? 'bg-black/[0.02]' : ''}`}>
+                    <div className="px-5 py-3 text-sm text-black">{service}</div>
+                    <div className="px-5 py-3 text-sm font-bold text-black">{price}</div>
+                    <div className="px-5 py-3 text-sm text-black/60">{time}</div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-black/40 mt-3 font-mono">Final price shown before you confirm booking. No surprises.</p>
+            </section>
+
+            {/* Who does the work */}
+            <section className="px-6 py-14 border-b border-black/10">
+              <h2 className="text-xl font-black uppercase mb-4">Montgomery County Students. Spotless Results.</h2>
+              <p className="text-sm text-black/60 leading-relaxed max-w-xl mb-4">
+                Every Lintel pro is a vetted, background-checked student from the Montgomery County area. They're trained on Lintel's purified water and pole systems and follow a clear service protocol on every job. You get professional results and the satisfaction of supporting local students building real skills.
+              </p>
+              <p className="text-sm text-black/60 leading-relaxed max-w-xl">
+                All pros maintain a 4.5★ minimum rating. After your cleaning, you'll rate the experience — that's how we maintain quality across the network.
+              </p>
+            </section>
+
+            {/* FAQ */}
+            <section id="faq" className="px-6 py-14 border-b border-black/10">
+              <h2 className="text-xl font-black uppercase mb-8">Frequently Asked Questions</h2>
+              <div className="space-y-0 divide-y divide-black/10 border-y border-black/10">
+                {FAQ_ITEMS.map(({ q, a }) => (
+                  <div key={q} className="py-5">
+                    <p className="text-sm font-bold text-black mb-2">{q}</p>
+                    <p className="text-sm text-black/55 leading-relaxed">{a}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Related */}
+            <section className="px-6 py-14 border-b border-black/10">
+              <h2 className="text-xl font-black uppercase mb-6">Related</h2>
+              <div className="grid md:grid-cols-3 gap-4">
+                <Link to="/services/gutter-cleaning" className="border border-black/10 p-5 hover:border-black/30 transition-colors">
+                  <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest mb-1">Service</p>
+                  <p className="text-sm font-bold text-black">Gutter Cleaning</p>
+                  <p className="text-xs text-black/50 mt-1">Ground-level vacuum cleaning. From $149.</p>
+                </Link>
+                <Link to="/services/pressure-washing" className="border border-black/10 p-5 hover:border-black/30 transition-colors">
+                  <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest mb-1">Service</p>
+                  <p className="text-sm font-bold text-black">Pressure Washing</p>
+                  <p className="text-xs text-black/50 mt-1">Driveways, patios, siding & more. From $200.</p>
+                </Link>
+                <Link to="/blog/window-cleaning-bethesda-md" className="border border-black/10 p-5 hover:border-black/30 transition-colors">
+                  <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest mb-1">Blog</p>
+                  <p className="text-sm font-bold text-black">Window Cleaning in Montgomery County, MD</p>
+                  <p className="text-xs text-black/50 mt-1">What to expect and what it costs.</p>
+                </Link>
+              </div>
+            </section>
+          </div>
+
+          {/* Right: sticky sidebar (desktop only) */}
+          <div className="hidden lg:block border-l border-black/10">
+            <div className="sticky top-14 px-8 py-10">
+              <ServiceQuoteCTA serviceType="window-cleaning" className="w-full" />
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Pricing */}
-      <section className="max-w-4xl mx-auto px-6 py-14 border-b border-black/10">
-        <h2 className="text-xl font-black uppercase mb-6">Pricing</h2>
-        <div className="border border-black/10 overflow-hidden">
-          <div className="grid grid-cols-3 bg-black text-white">
-            <div className="px-5 py-3 text-[11px] font-bold tracking-[0.1em] uppercase">Service</div>
-            <div className="px-5 py-3 text-[11px] font-bold tracking-[0.1em] uppercase">Starting Price</div>
-            <div className="px-5 py-3 text-[11px] font-bold tracking-[0.1em] uppercase">Typical Time</div>
-          </div>
-          {[
-            ['Exterior only', '$250', '60–90 min'],
-            ['Interior only', '$250', '60–90 min'],
-            ['Exterior + Interior', '$450', '2–3 hrs'],
-          ].map(([service, price, time], i) => (
-            <div key={service} className={`grid grid-cols-3 border-t border-black/10 ${i % 2 === 1 ? 'bg-black/[0.02]' : ''}`}>
-              <div className="px-5 py-3 text-sm text-black">{service}</div>
-              <div className="px-5 py-3 text-sm font-bold text-black">{price}</div>
-              <div className="px-5 py-3 text-sm text-black/60">{time}</div>
-            </div>
-          ))}
-        </div>
-        <p className="text-xs text-black/40 mt-3 font-mono">Final price shown before you confirm booking. No surprises.</p>
-      </section>
-
-      {/* Who does the work */}
-      <section className="max-w-4xl mx-auto px-6 py-14 border-b border-black/10">
-        <h2 className="text-xl font-black uppercase mb-4">Montgomery County Students. Spotless Results.</h2>
-        <p className="text-sm text-black/60 leading-relaxed max-w-xl mb-4">
-          Every Lintel pro is a vetted, background-checked student from the Montgomery County area. They're trained on Lintel's purified water and pole systems and follow a clear service protocol on every job. You get professional results and the satisfaction of supporting local students building real skills.
-        </p>
-        <p className="text-sm text-black/60 leading-relaxed max-w-xl">
-          All pros maintain a 4.5★ minimum rating. After your cleaning, you'll rate the experience — that's how we maintain quality across the network.
-        </p>
-      </section>
-
-      {/* FAQ */}
-      <section id="faq" className="max-w-4xl mx-auto px-6 py-14 border-b border-black/10">
-        <h2 className="text-xl font-black uppercase mb-8">Frequently Asked Questions</h2>
-        <div className="space-y-0 divide-y divide-black/10 border-y border-black/10">
-          {FAQ_ITEMS.map(({ q, a }) => (
-            <div key={q} className="py-5">
-              <p className="text-sm font-bold text-black mb-2">{q}</p>
-              <p className="text-sm text-black/55 leading-relaxed">{a}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Related */}
-      <section className="max-w-4xl mx-auto px-6 py-14 border-b border-black/10">
-        <h2 className="text-xl font-black uppercase mb-6">Related</h2>
-        <div className="grid md:grid-cols-3 gap-4">
-          <Link to="/services/gutter-cleaning" className="border border-black/10 p-5 hover:border-black/30 transition-colors">
-            <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest mb-1">Service</p>
-            <p className="text-sm font-bold text-black">Gutter Cleaning</p>
-            <p className="text-xs text-black/50 mt-1">Ground-level vacuum cleaning. From $149.</p>
-          </Link>
-          <Link to="/services/pressure-washing" className="border border-black/10 p-5 hover:border-black/30 transition-colors">
-            <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest mb-1">Service</p>
-            <p className="text-sm font-bold text-black">Pressure Washing</p>
-            <p className="text-xs text-black/50 mt-1">Driveways, patios, siding & more. From $200.</p>
-          </Link>
-          <Link to="/blog/window-cleaning-bethesda-md" className="border border-black/10 p-5 hover:border-black/30 transition-colors">
-            <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest mb-1">Blog</p>
-            <p className="text-sm font-bold text-black">Window Cleaning in Montgomery County, MD</p>
-            <p className="text-xs text-black/50 mt-1">What to expect and what it costs.</p>
-          </Link>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="bg-[#0d0d0d]">
-        <div className="max-w-6xl mx-auto px-6 py-16 flex flex-col lg:flex-row lg:items-center gap-10 lg:gap-16">
-          <div className="lg:flex-shrink-0 lg:max-w-xs">
-            <p className="text-[10px] font-mono text-white/35 tracking-[0.2em] uppercase mb-3">Ready to book?</p>
-            <h2 className="text-3xl font-black text-white uppercase mb-8">Streak-Free Windows.<br />Inside or Out.</h2>
-
-          </div>
-          <div className="flex-1 flex items-center justify-center lg:justify-end">
-            <ServiceQuoteCTA serviceType="window-cleaning" className="w-full max-w-[520px]" />
-          </div>
-        </div>
-      </section>
+      </div>
 
     </div>
   );

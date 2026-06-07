@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { CheckCircle, Loader2, ChevronRight, Sparkles } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
@@ -239,6 +239,12 @@ export default function Home() {
               </div>
             )}
           </div>
+
+          <p className="text-center mb-4">
+            <Link to="/pricing" className="text-xs text-black/40 hover:text-black/60 transition-colors">
+              How we price →
+            </Link>
+          </p>
 
           {/* Bundle discount banner */}
           {hasBundle && (

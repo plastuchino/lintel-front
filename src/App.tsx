@@ -28,6 +28,7 @@ import BookingConfirmation from './pages/BookingConfirmation';
 import ServiceGutterCleaning from './pages/ServiceGutterCleaning';
 import ServicePressureWashing from './pages/ServicePressureWashing';
 import ServiceWindowCleaning from './pages/ServiceWindowCleaning';
+import Pricing from './pages/Pricing';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 30000 } },
@@ -110,6 +111,7 @@ export default function App() {
               <Route path="/worker/register" element={<WorkerRegister />} />
               <Route path="/terms"   element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/pricing" element={<Pricing />} />
               <Route path="/blog"    element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/services/gutter-cleaning"  element={<ServiceGutterCleaning />} />

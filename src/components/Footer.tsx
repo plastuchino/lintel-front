@@ -23,7 +23,7 @@ export function Footer() {
               { heading: 'SERVICES', links: [['Gutter Cleaning', '/services/gutter-cleaning'], ['Window Cleaning', '/services/window-cleaning'], ['Pressure Washing', '/services/pressure-washing'], ['House Cleaning', '/login'], ['Lawn Mowing', '/login']] },
               { heading: 'HOMEOWNERS', links: [['How It Works', '#trust'], ['Pricing', '/login'], ['Book a Service', '/login'], ['Track Your Job', '/login']] },
               { heading: 'STUDENTS', links: [['Become a Pro', '/worker/register'], ['How Payouts Work', '/worker/register'], ['Requirements', '/worker/register']] },
-              { heading: 'COMPANY', links: [['Blog', '/blog'], ['Terms of Use', '/terms'], ['Privacy Policy', '/privacy'], ['Support', '/login']] },
+              { heading: 'COMPANY', links: [['Blog', '/blog'], ['How We Price', '/pricing'], ['Terms of Use', '/terms'], ['Privacy Policy', '/privacy'], ['Support', '/login']] },
             ].map(({ heading, links }) => (
               <div key={heading}>
                 <p className="text-white/40 text-[10px] font-semibold tracking-[0.2em] uppercase mb-4 font-mono">{heading}</p>

@@ -551,6 +551,12 @@ export default function QuotePreview() {
                 </div>
               </div>
 
+              <p className="text-center mb-3">
+                <Link to="/pricing" className="text-xs text-black/40 hover:text-black/60 transition-colors">
+                  How we price →
+                </Link>
+              </p>
+
               <button
                 onClick={handleNext}
                 disabled={selectedServices.size === 0}
