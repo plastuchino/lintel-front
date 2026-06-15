@@ -7,8 +7,8 @@ import { useBookingStore } from '../store/bookingStore';
 import { AddressSearch } from '../components/AddressSearch';
 import logo from '../assets/logo.jpeg';
 
-import image_1 from "../assets/worker_1.jpeg"
-import image_2 from "../assets/worker_2.jpg"
+// import image_1 from "../assets/worker_1.jpeg"
+// import image_2 from "../assets/worker_2.jpg"
 
 
 const SERVICES = [
@@ -48,29 +48,10 @@ const STATS = [
   { value: '100%', label: 'Background Checked' },
 ];
 
-// TODO: Replace placeholder data with real worker names, schools, grades, services, and stats
-const TEAM = [
-  {
-    // TODO: Replace 'Add photo' image slot — import worker photo and use it as `src` below
-    name: 'Sebastian',
-    school: 'Walter Johnson High School',
-    grade: 'Grade 12',
-    services: ['Gutters', 'Windows', 'Pressure Wash'],
-    jobs: '14',
-    rating: '4.85',
-    src: image_1
-  },
-  {
-    name: 'Alban',
-    school: 'Walter Johnson High School',
-    grade: 'Grade 12',
-    services: ['Windows', 'Pressure Wash', 'Gutters'],
-    jobs: '15',
-    rating: '4.92',
-    src: image_2
-  },
-  
-];
+// const TEAM = [
+//   { name: 'Sebastian', school: 'Walter Johnson High School', grade: 'Grade 12', services: ['Gutters', 'Windows', 'Pressure Wash'], jobs: '14', rating: '4.85', src: image_1 },
+//   { name: 'Alban',     school: 'Walter Johnson High School', grade: 'Grade 12', services: ['Windows', 'Pressure Wash', 'Gutters'], jobs: '15', rating: '4.92', src: image_2 },
+// ];
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -237,6 +218,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Meet the Team ───────────────────────────────────────────────── */}
+      {/* WHO WE ARE section commented out
       <section className="py-20 border-t border-black/10 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-12">
@@ -251,22 +233,8 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-black/10">
             {TEAM.map(({ name, school, grade, services, jobs, rating, src }, i) => (
               <div key={i} className="bg-white p-8 flex flex-col gap-5">
-{/*                 
-                  TODO: Replace this placeholder with a real worker photo.
-                  Import the image at the top of the file, e.g.:
-                    import worker1Photo from '../assets/worker1.jpg';
-                  Then replace the gray box below with:
-                                   */}
-
-                {/* <img src={src} alt={name} className="w-full aspect-[4/3] object-cover" /> */}
-
                 <div className="w-full rounded-[30px] aspect-[4/3] bg-black/5 border border-black/10 flex flex-col items-center justify-center gap-2">
                   <img src={src} alt={name} className="w-full aspect-[4/3] object-cover rounded-[30px]" />
-
-                  {/* <div className="w-14 h-14 rounded-full bg-black/10 border border-black/15 flex items-center justify-center">
-                    <span className="text-black/30 text-lg font-bold">{name[0]}</span>
-                  </div>
-                  <p className="text-[9px] font-mono text-black/25 tracking-[0.15em] uppercase">Add Photo Here</p> */}
                 </div>
 
                 <div>
@@ -295,6 +263,7 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+      */}
 
       {/* ── Trust pillars ───────────────────────────────────────────────── */}
       <section id="trust" className="py-20 bg-white border-t border-black/10">

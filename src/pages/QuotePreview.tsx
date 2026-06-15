@@ -14,6 +14,13 @@ import logo from '../assets/logo.jpeg';
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string;
 const TTL_MS = 48 * 60 * 60 * 1000;
 
+const LOADING_MESSAGES = [
+  'Getting you the best price for your home…',
+  'Checking what services your area supports…',
+  'Almost there — this one\'s worth the wait…',
+  'Pulling together your personalized quote…',
+];
+
 async function geocodeAddress(address: string): Promise<{ lat: number; lng: number } | null> {
   if (!MAPBOX_TOKEN) return null;
   try {
@@ -49,6 +56,9 @@ export default function QuotePreview() {
   const [expiresAt, setExpiresAt] = useState<number>(0);
   const [remaining, setRemaining] = useState<number>(TTL_MS);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
+  const [msgIndex, setMsgIndex] = useState(0);
+  const [elapsed, setElapsed] = useState(0);
 
   // Multi-select state
   const [selectedServices, setSelectedServices] = useState<Set<ServiceType>>(new Set());
@@ -100,7 +110,28 @@ export default function QuotePreview() {
     return () => clearInterval(tick);
   }, [phase, expiresAt]);
 
+  useEffect(() => {
+    if (phase !== 'loading') return;
+    const progressInterval = setInterval(() => {
+      setProgress((p) => p + (90 - p) * 0.04);
+    }, 100);
+    const msgInterval = setInterval(() => {
+      setMsgIndex((i) => i + 1);
+    }, 3000);
+    const elapsedInterval = setInterval(() => {
+      setElapsed((s) => s + 1);
+    }, 1000);
+    return () => {
+      clearInterval(progressInterval);
+      clearInterval(msgInterval);
+      clearInterval(elapsedInterval);
+    };
+  }, [phase]);
+
   const fetchQuote = useCallback(async (addr: string, geocoords?: { lat: number; lng: number } | null) => {
+    setProgress(0);
+    setMsgIndex(0);
+    setElapsed(0);
     setPhase('loading');
     setLoadError(null);
     try {
@@ -113,6 +144,7 @@ export default function QuotePreview() {
       setQuotes(q as Record<ServiceType, number>);
       setExpiresAt(exp);
       setRemaining(TTL_MS);
+      setProgress(100);
       setPhase('quote');
     } catch (err: unknown) {
       const status = (err as { response?: { status?: number } }).response?.status;
@@ -123,6 +155,8 @@ export default function QuotePreview() {
       } else {
         setLoadError('Something went wrong. Please try again.');
       }
+      setProgress(0);
+      setElapsed(0);
       setPhase('input');
     }
   }, []);
@@ -255,11 +289,14 @@ export default function QuotePreview() {
             <div className="mb-6 rounded-xl border border-uber-gray-100 bg-uber-gray-50 overflow-hidden">
               <div className="flex items-center gap-2.5 px-4 pt-3 pb-2">
                 <Loader2 className="w-3.5 h-3.5 animate-spin text-black flex-shrink-0" />
-                <p className="text-sm font-semibold text-black">Analyzing your property…</p>
+                <p className="text-sm font-semibold text-black">{LOADING_MESSAGES[msgIndex % LOADING_MESSAGES.length]}</p>
               </div>
-              <div className="mx-4 mb-3 h-1 bg-uber-gray-200 rounded-full overflow-hidden">
-                <div className="h-full w-1/3 bg-black rounded-full animate-progress-slide" />
+              <div className="mx-4 h-1 bg-uber-gray-200 rounded-full overflow-hidden">
+                <div className="h-full bg-black rounded-full transition-all duration-100" style={{ width: `${progress}%` }} />
               </div>
+              <p className="px-4 pt-1.5 pb-3 text-[11px] text-uber-gray-400">
+                {elapsed <= 10 ? `${elapsed}s` : 'Hang tight — just one more moment.'}
+              </p>
             </div>
           )}
 
