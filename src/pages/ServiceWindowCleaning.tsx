@@ -1,7 +1,11 @@
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { Phone, MapPin } from 'lucide-react';
 import logo from '../assets/logo.jpeg';
 import { ServiceQuoteCTA } from '../components/ServiceQuoteCTA';
+import { ServiceHeroCTA } from '../components/ServiceHeroCTA';
+import { useGeoHeadline } from '../hooks/useGeoHeadline';
 import window_image from '../assets/site_asset_window.png';
 
 const FAQ_ITEMS = [
@@ -42,8 +46,12 @@ const FAQ_SCHEMA = {
 };
 
 export default function ServiceWindowCleaning() {
+  const heroRef = useRef<HTMLElement>(null);
+  const { cityName, geoResolved, requestLocation } = useGeoHeadline();
+  const locationLabel = cityName ? `${cityName}, MD` : 'Near You';
+  const h1Location = cityName ? `in ${cityName}, MD` : 'Near You';
   return (
-    <div className="min-h-screen bg-white text-black" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+    <div className="min-h-screen bg-white text-black pb-16 lg:pb-0" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
       <Helmet>
         <title>Window Cleaning in Montgomery County, MD | Lintel</title>
         <meta name="description" content="Professional window cleaning in Montgomery County, MD. Interior or exterior, streak-free results, fully insured. Starting at $250. Book online." />
@@ -101,31 +109,48 @@ export default function ServiceWindowCleaning() {
             <Link to="/services/window-cleaning"  className="px-4 h-9 flex items-center text-black text-[11px] font-semibold tracking-[0.12em] uppercase border-b-2 border-black">Windows</Link>
             <Link to="/blog" className="px-4 h-9 flex items-center text-black/50 hover:text-black text-[11px] font-semibold tracking-[0.12em] uppercase transition-colors">Blog</Link>
           </nav>
-          <Link to="/login" className="px-4 h-8 flex items-center bg-black text-white text-[11px] font-semibold tracking-[0.1em] uppercase hover:bg-black/80 transition-colors">
-            BOOK NOW
-          </Link>
+          <div className="flex items-center gap-3">
+            <a href="tel:12403660377" className="hidden md:flex items-center gap-1.5 text-black/60 hover:text-black text-[11px] font-semibold tracking-[0.08em] transition-colors">
+              <Phone className="w-3.5 h-3.5" />(240) 366-0377
+            </a>
+            <a href="tel:12403660377" className="md:hidden flex items-center text-black/60 hover:text-black transition-colors">
+              <Phone className="w-4 h-4" />
+            </a>
+            <Link to="/login" className="px-4 h-8 flex items-center bg-black text-white text-[11px] font-semibold tracking-[0.1em] uppercase hover:bg-black/80 transition-colors">
+              BOOK NOW
+            </Link>
+          </div>
         </div>
       </header>
 
       {/* Hero */}
-      <section className="pt-14 bg-[#0d0d0d] min-h-screen flex flex-col relative overflow-hidden">
+      <section ref={heroRef} className="pt-14 bg-[#0d0d0d] min-h-[70vh] flex flex-col relative overflow-hidden">
         <img src={window_image} className="absolute inset-0 w-full h-full object-cover object-center opacity-60" alt="" />
         <div className="absolute inset-0 bg-black/50" />
-        <div className="relative z-10 flex-1 w-full max-w-6xl mx-auto px-6 flex flex-col justify-center py-16">
-          <p className="text-[10px] font-mono text-white/35 tracking-[0.2em] uppercase mb-4">Window Cleaning · Montgomery County, MD</p>
-          <h1 className="text-4xl lg:text-6xl font-black text-white leading-tight uppercase mb-10 max-w-xl">
-            Window Cleaning in<br />Montgomery County, MD
-          </h1>
-          <p className="text-[10px] font-mono text-white/35 tracking-[0.15em] uppercase">scroll to see how it works ↓</p>
+        <div className="relative z-10 flex-1 w-full max-w-6xl mx-auto px-6 py-12 flex flex-col lg:flex-row lg:items-center lg:gap-16">
+          <div className="flex-1 mb-8 lg:mb-0">
+            <span className="inline-block bg-[#008060] text-white text-[10px] font-bold tracking-[0.2em] uppercase px-3 py-1 mb-5">{locationLabel}</span>
+            <h1 className="text-4xl lg:text-5xl font-black text-white leading-tight uppercase mb-4 max-w-xl">
+              Window Cleaning<br />{h1Location}
+            </h1>
+            {!geoResolved && (
+              <button
+                onClick={requestLocation}
+                className="inline-flex items-center gap-1.5 text-white/60 hover:text-white text-[11px] font-semibold transition-colors mb-4"
+              >
+                <MapPin className="w-3.5 h-3.5" />📍 Show local pricing
+              </button>
+            )}
+            <p className="text-white/60 text-sm leading-relaxed max-w-sm">Streak-free interior and exterior cleaning. Water-fed pole system. No ladders. No streaks.</p>
+          </div>
+          <div className="w-full lg:w-[380px] lg:flex-shrink-0">
+            <ServiceHeroCTA serviceType="window-cleaning" />
+          </div>
         </div>
       </section>
 
-      {/* Below-hero: mobile CTA + two-column content/sidebar */}
+      {/* Below-hero: two-column content/sidebar */}
       <div className="max-w-7xl mx-auto">
-        {/* Mobile CTA — stacked directly below hero, hidden on desktop */}
-        <div className="lg:hidden bg-[#0d0d0d] px-6 py-10">
-          <ServiceQuoteCTA serviceType="window-cleaning" className="w-full" />
-        </div>
 
         <div className="lg:grid lg:grid-cols-[1fr_380px] lg:items-start">
           {/* Left: content sections */}
@@ -292,6 +317,21 @@ export default function ServiceWindowCleaning() {
         </div>
       </div>
 
+      {/* Sticky mobile bottom bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden flex border-t border-black/10 bg-white">
+        <button
+          onClick={() => heroRef.current?.scrollIntoView({ behavior: 'smooth' })}
+          className="flex-1 bg-[#008060] text-white font-black text-[11px] tracking-[0.15em] uppercase py-4 hover:bg-[#006b50] transition-colors"
+        >
+          GET FREE QUOTE
+        </button>
+        <a
+          href="tel:12403660377"
+          className="flex-1 bg-black text-white font-black text-[11px] tracking-[0.15em] uppercase py-4 flex items-center justify-center gap-2 hover:bg-black/80 transition-colors"
+        >
+          <Phone className="w-3.5 h-3.5" /> CALL NOW
+        </a>
+      </div>
     </div>
   );
 }

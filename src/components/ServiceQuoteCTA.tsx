@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, Shield, Star, CreditCard, Users } from 'lucide-react';
+import { ChevronRight, Shield, Star, CreditCard, Users, Phone } from 'lucide-react';
 import { AddressSearch } from './AddressSearch';
 import { useBookingStore } from '../store/bookingStore';
 import type { ServiceType } from '../lib/api';
@@ -70,6 +70,15 @@ export function ServiceQuoteCTA({ serviceType, className }: ServiceQuoteCTAProps
             No payment until you confirm the job is done.
           </p>
         </div>
+
+        {/* Phone number */}
+        <a
+          href="tel:12403660377"
+          className="flex items-center justify-center gap-2 text-black/50 hover:text-black transition-colors text-sm font-semibold"
+        >
+          <Phone className="w-3.5 h-3.5" />
+          (240) 366-0377
+        </a>
 
         {/* Inline trust row */}
         <div className="border-t border-black/8 pt-4 flex items-center justify-around">

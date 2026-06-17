@@ -265,9 +265,16 @@ export const prospects = {
   submit: (data: {
     name: string;
     email: string;
-    phone: string;
+    phone?: string;
     address: string;
     serviceTypes: ServiceType[];
   }) => api.post<{ uuid: string }>('/prospects', data),
+
+  getQuote: (data: {
+    name: string;
+    email: string;
+    address: string;
+    serviceType: ServiceType;
+  }) => api.post<{ quotes: Record<ServiceType, number> }>('/prospects/quote', data),
 };
 
