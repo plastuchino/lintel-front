@@ -29,6 +29,8 @@ import ServiceGutterCleaning from './pages/ServiceGutterCleaning';
 import ServicePressureWashing from './pages/ServicePressureWashing';
 import ServiceWindowCleaning from './pages/ServiceWindowCleaning';
 import Pricing from './pages/Pricing';
+import JobStatus from './pages/JobStatus';
+import QuoteSignup from './pages/QuoteSignup';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 30000 } },
@@ -118,6 +120,8 @@ export default function App() {
               <Route path="/services/pressure-washing" element={<ServicePressureWashing />} />
               <Route path="/services/window-cleaning"  element={<ServiceWindowCleaning />} />
               <Route path="/quote-preview" element={<QuotePreview />} />
+              <Route path="/b/:jobId" element={<JobStatus />} />
+              <Route path="/book/q/:quoteId" element={<QuoteSignup />} />
 
               <Route path="/book" element={<ProtectedRoute><Home /></ProtectedRoute>} />
               <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />

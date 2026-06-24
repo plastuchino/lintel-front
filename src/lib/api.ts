@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useAuthStore } from '../store/authStore';
 
 const isLocalhost = typeof window !== 'undefined' && 
   (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
@@ -18,7 +19,7 @@ api.interceptors.response.use(
   (res) => res,
   (err) => {
     if (err.response?.status === 401) {
-      localStorage.removeItem('lintel_token');
+      useAuthStore.getState().logout();
       window.location.href = '/login';
     }
     return Promise.reject(err);
@@ -114,17 +115,21 @@ export const jobs = {
     scheduledAt?: string;
     notes?: string;
     promoCode?: string;
-    paymentMethodId?: string;
+    contractSignerName: string;
+    agreementVersion: string;
     recurringInterval?: 3 | 6 | 12;
-  }) => api.post<{ job: Job; clientSecret?: string; requiresAction: boolean }>('/jobs', data),
+  }) => api.post<{ job: Job; requiresAction: boolean }>('/jobs', data),
   createBundle: (data: {
     serviceTypes: ServiceType[];
     address: string;
     scheduledAt?: string;
     notes?: string;
     promoCode?: string;
-    paymentMethodId?: string;
-  }) => api.post<{ job: Job; clientSecret?: string; requiresAction: boolean }>('/jobs/bundle', data),
+    contractSignerName: string;
+    agreementVersion: string;
+  }) => api.post<{ job: Job; requiresAction: boolean }>('/jobs/bundle', data),
+  getPublic: (jobId: string) =>
+    api.get<{ serviceType: string; serviceTypes?: string[]; serviceName: string; price: number; address: string; scheduledAt: string | null; status: string }>(`/jobs/public/${jobId}`),
   activate: (id: string, serviceType: ServiceType | 'bundle') =>
     api.post<{ success: boolean }>(`/jobs/${id}/activate`, { serviceType }),
   list: () => api.get<Job[]>('/jobs'),
@@ -261,6 +266,11 @@ export interface AdminProspect {
   convertedAt?: string;
 }
 
+export const quotes = {
+  getPublic: (prospectId: string) =>
+    api.get<{ quoteId: string; serviceType: string; serviceName: string; price: number | null; address: string }>(`/prospects/public/${prospectId}`),
+};
+
 export const prospects = {
   submit: (data: {
     name: string;
@@ -275,6 +285,6 @@ export const prospects = {
     email: string;
     address: string;
     serviceType: ServiceType;
-  }) => api.post<{ quotes: Record<ServiceType, number> }>('/prospects/quote', data),
+  }) => api.post<{ quotes: Record<ServiceType, number>; prospectId: string }>('/prospects/quote', data),
 };
 

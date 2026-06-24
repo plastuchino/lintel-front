@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { stripePromise } from '../lib/stripe';
 import { ChevronLeft, Tag, X, Sparkles } from 'lucide-react';
 import { useBookingStore } from '../store/bookingStore';
 import { useQuery } from '@tanstack/react-query';
 import { services, jobs } from '../lib/api';
-import { PaymentPanel } from '../components/PaymentPanel';
+import { ContractSignPanel } from '../components/ContractSignPanel';
 import { FrequencySelector } from '../components/FrequencySelector';
 import { Input } from '../components/ui/input';
 import { formatCurrency } from '../lib/utils';
@@ -101,7 +100,7 @@ export default function Checkout() {
     toast({ title: 'Promo applied!' });
   };
 
-  const handlePay = async (paymentMethodId?: string) => {
+  const handleSign = async (contractSignerName: string, agreementVersion: string) => {
     if (selectedServiceObjects.length === 0 || !confirmedAddress) return;
 
     if (scheduledAt) {
@@ -112,9 +111,6 @@ export default function Checkout() {
     setCreating(true);
     try {
       let jobId: string;
-      let jobServiceType: string;
-      let requiresAction = false;
-      let clientSecret: string | undefined;
 
       const scheduledAtEt = scheduledAt ? toEasternIso(scheduledAt) : undefined;
 
@@ -125,12 +121,10 @@ export default function Checkout() {
           scheduledAt: scheduledAtEt,
           notes: notes || undefined,
           promoCode: promoCode || undefined,
-          paymentMethodId,
+          contractSignerName,
+          agreementVersion,
         });
         jobId = res.data.job.uuid;
-        jobServiceType = 'bundle';
-        requiresAction = res.data.requiresAction;
-        clientSecret = res.data.clientSecret;
       } else {
         const res = await jobs.create({
           serviceType: selectedServices[0],
@@ -138,24 +132,11 @@ export default function Checkout() {
           scheduledAt: scheduledAtEt,
           notes: notes || undefined,
           promoCode: promoCode || undefined,
-          paymentMethodId,
+          contractSignerName,
+          agreementVersion,
           recurringInterval: recurringInterval ?? undefined,
         });
         jobId = res.data.job.uuid;
-        jobServiceType = selectedServices[0];
-        requiresAction = res.data.requiresAction;
-        clientSecret = res.data.clientSecret;
-      }
-
-      if (requiresAction && clientSecret) {
-        const stripe = await stripePromise;
-        if (!stripe) throw new Error('Stripe failed to load');
-        const { error } = await stripe.handleNextAction({ clientSecret });
-        if (error) {
-          toast({ title: 'Payment authentication failed', description: error.message, variant: 'destructive' });
-          return;
-        }
-        await jobs.activate(jobId, jobServiceType as typeof selectedServices[0] | 'bundle');
       }
 
       setCurrentJobId(jobId);
@@ -169,6 +150,12 @@ export default function Checkout() {
       if (typeof window.gtag === 'function') {
         window.gtag('event', 'conversion', {
           send_to: 'AW-18193036616/63m8CKPNh7ocEMjqjuND',
+          value: total,
+          currency: 'USD',
+          transaction_id: jobId,
+        });
+        window.gtag('event', 'conversion', {
+          send_to: 'AW-18193036616',
           value: total,
           currency: 'USD',
           transaction_id: jobId,
@@ -188,6 +175,23 @@ export default function Checkout() {
       };
 
       navigate('/booking-confirmation', { state: confirmationState });
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { error?: string }; status?: number } };
+      const status = axiosErr.response?.status;
+      const message = axiosErr.response?.data?.error;
+      if (status === 403) {
+        toast({
+          title: 'Account not authorized',
+          description: 'This account is registered as a professional. Please sign out and sign in with your customer account.',
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: 'Booking failed',
+          description: message || 'Something went wrong. Please try again.',
+          variant: 'destructive',
+        });
+      }
     } finally {
       setCreating(false);
     }
@@ -368,16 +372,16 @@ export default function Checkout() {
         </div>
 
 
-        {/* Payment */}
+        {/* Contract sign */}
         <div className="border bg-white border-uber-gray-200 rounded-xl p-5 mb-6">
-          <p className="text-xs font-bold text-uber-gray-400 uppercase tracking-widest mb-4">Payment</p>
-          <PaymentPanel
+          <p className="text-xs font-bold text-uber-gray-400 uppercase tracking-widest mb-4">Confirm & sign</p>
+          <ContractSignPanel
             amount={total}
-            label={`Book — ${formatCurrency(total)}`}
+            serviceName={hasBundle ? `${selectedServiceObjects.length} services` : (selectedServiceObjects[0]?.name ?? '')}
+            address={confirmedAddress}
+            recurringInterval={recurringInterval}
             loading={creating}
-            disabled={promoRecurringConflict}
-            onPay={handlePay}
-            onError={(err) => toast({ title: 'Payment error', description: err, variant: 'destructive' })}
+            onSign={handleSign}
           />
         </div>
         <div className="border rounded-lg border-uber-gray-200 px-5 py-4 space-y-2">

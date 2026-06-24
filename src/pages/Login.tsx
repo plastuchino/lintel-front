@@ -3,13 +3,15 @@ import { useNavigate, Link } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { Helmet } from 'react-helmet-async';
 import { useAuthStore } from '../store/authStore';
-import { auth } from '../lib/api';
+import { useBookingStore } from '../store/bookingStore';
+import { auth, quotes, jobs } from '../lib/api';
 import { toast } from '../hooks/useToast';
 import logo from '../assets/logo.jpeg';
 
 export default function Login() {
   const navigate = useNavigate();
   const { setAuth, user } = useAuthStore();
+  const { setSelectedServices, setAddress, setQuotes, setQuotesReady } = useBookingStore();
   const googleContainerRef = useRef<HTMLDivElement>(null);
   const [googleBtnWidth, setGoogleBtnWidth] = useState(360);
 
@@ -32,6 +34,38 @@ export default function Login() {
       const res = await auth.google(credentialResponse.credential);
       const { token, user: u } = res.data;
       setAuth(token, u as unknown as Parameters<typeof setAuth>[1]);
+
+      const pendingQuoteId = localStorage.getItem('pendingQuoteId');
+      if (pendingQuoteId && u.role !== 'worker') {
+        try {
+          const q = await quotes.getPublic(pendingQuoteId);
+          const qd = q.data;
+          if (qd.serviceType) {
+            setSelectedServices([qd.serviceType as Parameters<typeof setSelectedServices>[0][0]]);
+          }
+          setAddress(qd.address, true);
+
+          // Lock the quote under the authenticated user's key so job creation
+          // uses the same price shown at checkout, not a fresh API call.
+          let lockedPrice = qd.price;
+          try {
+            const qr = await jobs.getQuote(qd.address, [qd.serviceType as import('../lib/api').ServiceType]);
+            const locked = (qr.data.quotes as Record<string, number>)[qd.serviceType];
+            if (locked != null) lockedPrice = locked;
+          } catch { /* fall back to prospect price */ }
+
+          if (lockedPrice != null) {
+            setQuotes({ [qd.serviceType]: lockedPrice } as Parameters<typeof setQuotes>[0]);
+          }
+          setQuotesReady(true);
+          localStorage.removeItem('pendingQuoteId');
+          navigate('/checkout');
+          return;
+        } catch {
+          localStorage.removeItem('pendingQuoteId');
+        }
+      }
+
       navigate(u.role === 'worker' ? '/worker/dashboard' : '/book');
     } catch {
       toast({ title: 'Sign-in failed', description: 'Please try again.', variant: 'destructive' });

@@ -5,6 +5,7 @@ import { Phone, MapPin } from 'lucide-react';
 import logo from '../assets/logo.jpeg';
 import { ServiceQuoteCTA } from '../components/ServiceQuoteCTA';
 import { ServiceHeroCTA } from '../components/ServiceHeroCTA';
+import { TrustBadgeStrip } from '../components/TrustBadgeStrip';
 import { useGeoHeadline } from '../hooks/useGeoHeadline';
 import window_image from '../assets/site_asset_window.png';
 
@@ -148,6 +149,9 @@ export default function ServiceWindowCleaning() {
           </div>
         </div>
       </section>
+
+      {/* Trust badges */}
+      <TrustBadgeStrip />
 
       {/* Below-hero: two-column content/sidebar */}
       <div className="max-w-7xl mx-auto">

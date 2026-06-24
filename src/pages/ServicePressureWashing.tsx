@@ -5,6 +5,7 @@ import { Phone, MapPin } from 'lucide-react';
 import logo from '../assets/logo.jpeg';
 import { ServiceQuoteCTA } from '../components/ServiceQuoteCTA';
 import { ServiceHeroCTA } from '../components/ServiceHeroCTA';
+import { TrustBadgeStrip } from '../components/TrustBadgeStrip';
 import { useGeoHeadline } from '../hooks/useGeoHeadline';
 import pressure_image from '../assets/site_asset_pressure_washing.png';
 
@@ -148,6 +149,9 @@ export default function ServicePressureWashing() {
           </div>
         </div>
       </section>
+
+      {/* Trust badges */}
+      <TrustBadgeStrip />
 
       {/* Below-hero: two-column content/sidebar */}
       <div className="max-w-7xl mx-auto">

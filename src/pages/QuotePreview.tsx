@@ -9,6 +9,8 @@ import { ServiceCard } from '../components/ServiceCard';
 import { jobs, services, prospects } from '../lib/api';
 import type { ServiceType, Service } from '../lib/api';
 import { getPreviewCache, setPreviewCache, clearPreviewCache } from '../lib/previewCache';
+import { getSavedQuotes, pushSavedQuote } from '../lib/savedQuotes';
+import type { SavedQuote } from '../lib/savedQuotes';
 import logo from '../assets/logo.jpeg';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string;
@@ -60,6 +62,8 @@ export default function QuotePreview() {
   const [msgIndex, setMsgIndex] = useState(0);
   const [elapsed, setElapsed] = useState(0);
 
+  const [savedQuotes, setSavedQuotes] = useState<SavedQuote[]>([]);
+
   // Multi-select state
   const [selectedServices, setSelectedServices] = useState<Set<ServiceType>>(new Set());
   const [showLeadForm, setShowLeadForm] = useState(false);
@@ -76,6 +80,11 @@ export default function QuotePreview() {
   // Load service list for card rendering
   useEffect(() => {
     services.list().then((r) => setServiceList(r.data)).catch(() => {});
+  }, []);
+
+  // Load saved quotes from localStorage on mount
+  useEffect(() => {
+    setSavedQuotes(getSavedQuotes());
   }, []);
 
   // Check sessionStorage cache on mount
@@ -146,6 +155,8 @@ export default function QuotePreview() {
       setRemaining(TTL_MS);
       setProgress(100);
       setPhase('quote');
+      pushSavedQuote({ address: addr, quotes: q as Record<ServiceType, number>, coords: c, createdAt: Date.now() });
+      setSavedQuotes(getSavedQuotes());
     } catch (err: unknown) {
       const status = (err as { response?: { status?: number } }).response?.status;
       if (status === 429) {
@@ -226,6 +237,18 @@ export default function QuotePreview() {
     navigate('/login');
   };
 
+  const restoreSavedQuote = (saved: SavedQuote) => {
+    const rem = saved.expiresAt - Date.now();
+    setAddress(saved.address, true);
+    setInputVal(saved.address);
+    setCoords(saved.coords);
+    setCoordinates(saved.coords);
+    setQuotes(saved.quotes);
+    setExpiresAt(saved.expiresAt);
+    setRemaining(rem);
+    setPhase(rem <= 0 ? 'expired' : 'quote');
+  };
+
   const handleRefresh = () => {
     clearPreviewCache();
     setQuotes(null);
@@ -260,6 +283,29 @@ export default function QuotePreview() {
             </h1>
             <p className="text-uber-gray-400 text-sm mt-2">No sign-up required to see your price.</p>
           </div>
+
+          {savedQuotes.length > 0 && phase !== 'loading' && (
+            <div className="mb-6">
+              <p className="text-xs font-bold text-uber-gray-400 uppercase tracking-widest mb-2">Pick up where you left off</p>
+              <div className="space-y-2">
+                {savedQuotes.map((sq) => (
+                  <button
+                    key={sq.address}
+                    onClick={() => restoreSavedQuote(sq)}
+                    className="w-full flex items-center justify-between gap-3 px-4 py-3 border border-uber-gray-100 rounded-xl bg-uber-gray-50 hover:border-black/20 hover:bg-uber-gray-100 transition-colors text-left"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-2 h-2 rounded-full bg-black flex-shrink-0" />
+                      <span className="text-sm font-medium text-black truncate">
+                        {sq.address.split(',').slice(0, 2).join(',')}
+                      </span>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-uber-gray-400 flex-shrink-0" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="mb-6">
             <p className="text-xs font-bold text-uber-gray-400 uppercase tracking-widest mb-2">Service Address</p>

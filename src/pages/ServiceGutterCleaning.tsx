@@ -5,6 +5,7 @@ import { Phone, MapPin } from 'lucide-react';
 import logo from '../assets/logo.jpeg';
 import { ServiceQuoteCTA } from '../components/ServiceQuoteCTA';
 import { ServiceHeroCTA } from '../components/ServiceHeroCTA';
+import { TrustBadgeStrip } from '../components/TrustBadgeStrip';
 import { useGeoHeadline } from '../hooks/useGeoHeadline';
 import gutter_image from "../assets/site_asset_gutter_one.png"
 const FAQ_ITEMS = [
@@ -147,6 +148,9 @@ export default function ServiceGutterCleaning() {
           </div>
         </div>
       </section>
+
+      {/* Trust badges */}
+      <TrustBadgeStrip />
 
       {/* Below-hero: two-column content/sidebar */}
       <div className="max-w-7xl mx-auto">

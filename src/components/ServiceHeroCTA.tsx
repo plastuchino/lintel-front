@@ -46,6 +46,7 @@ export function ServiceHeroCTA({ serviceType, className }: ServiceHeroCTAProps) 
   const [progress, setProgress] = useState(0);
   const [msgIndex, setMsgIndex] = useState(0);
   const [quotedPrice, setQuotedPrice] = useState<number | null>(null);
+  const [prospectId, setProspectId] = useState<string | null>(null);
   const [followedUp, setFollowedUp] = useState(false);
 
   const formRef = useRef<HTMLDivElement>(null);
@@ -86,8 +87,12 @@ export function ServiceHeroCTA({ serviceType, className }: ServiceHeroCTAProps) 
       });
       const price = res.data?.quotes?.[serviceType] ?? null;
       setQuotedPrice(price);
+      setProspectId(res.data?.prospectId ?? null);
       setProgress(100);
       setPhase('result');
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'conversion', { send_to: 'AW-18193036616', value: 10, currency: 'USD' });
+      }
     } catch {
       setProgress(0);
       setPhase('error');
@@ -151,10 +156,10 @@ export function ServiceHeroCTA({ serviceType, className }: ServiceHeroCTAProps) 
           </div>
 
           <button
-            onClick={() => navigate('/login')}
+            onClick={() => navigate(prospectId ? `/book/q/${prospectId}` : '/login')}
             className="w-full bg-[#008060] text-white font-black text-[12px] tracking-[0.2em] uppercase flex items-center justify-center gap-2 hover:bg-[#006b50] transition-colors py-3.5"
           >
-            LOGIN TO BOOK NOW <ChevronRight className="w-4 h-4" />
+            BOOK NOW <ChevronRight className="w-4 h-4" />
           </button>
 
           {!followedUp ? (
