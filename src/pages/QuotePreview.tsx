@@ -226,6 +226,9 @@ export default function QuotePreview() {
         serviceTypes: Array.from(selectedServices),
       });
       setSubmitted(true);
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'conversion', { send_to: 'AW-18193036616/3ETTCIG0msQcEMjqjuND', value: 10, currency: 'USD', transaction_id: crypto.randomUUID() });
+      }
     } catch {
       setSubmitError('Something went wrong. Please try again.');
     } finally {

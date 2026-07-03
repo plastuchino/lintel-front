@@ -91,7 +91,7 @@ export function ServiceHeroCTA({ serviceType, className }: ServiceHeroCTAProps) 
       setProgress(100);
       setPhase('result');
       if (typeof window.gtag === 'function') {
-        window.gtag('event', 'conversion', { send_to: 'AW-18193036616', value: 10, currency: 'USD' });
+        window.gtag('event', 'conversion', { send_to: 'AW-18193036616/3ETTCIG0msQcEMjqjuND', value: 10, currency: 'USD', transaction_id: crypto.randomUUID() });
       }
     } catch {
       setProgress(0);

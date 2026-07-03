@@ -155,7 +155,7 @@ export default function Checkout() {
           transaction_id: jobId,
         });
         window.gtag('event', 'conversion', {
-          send_to: 'AW-18193036616',
+          send_to: 'AW-18193036616/3ETTCIG0msQcEMjqjuND',
           value: total,
           currency: 'USD',
           transaction_id: jobId,

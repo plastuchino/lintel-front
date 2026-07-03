@@ -17,6 +17,7 @@ export default function QuoteSignup() {
   const { setSelectedServices, setAddress, setQuotes, setQuotesReady } = useBookingStore();
   const googleContainerRef = useRef<HTMLDivElement>(null);
   const [googleBtnWidth, setGoogleBtnWidth] = useState(360);
+  const hydratingRef = useRef(false);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['public-quote', quoteId],
@@ -47,7 +48,8 @@ export default function QuoteSignup() {
   }, [user, data]);
 
   async function hydratAndGo(quoteData: typeof data) {
-    if (!quoteData) return;
+    if (!quoteData || hydratingRef.current) return;
+    hydratingRef.current = true;
     if (quoteData.serviceType) {
       setSelectedServices([quoteData.serviceType as Parameters<typeof setSelectedServices>[0][0]]);
     }
@@ -81,9 +83,10 @@ export default function QuoteSignup() {
         navigate('/worker/dashboard');
         return;
       }
-      // hydration happens via the useEffect above once user is set
+      await hydratAndGo(data);
     } catch {
       localStorage.removeItem('pendingQuoteId');
+      hydratingRef.current = false;
       toast({ title: 'Sign-in failed', description: 'Please try again.', variant: 'destructive' });
     }
   };

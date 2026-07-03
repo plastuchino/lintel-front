@@ -72,6 +72,9 @@ export default function JobTracking() {
       await jobs.confirm(id, serviceType, confirmCode);
       queryClient.invalidateQueries({ queryKey: ['job', id, serviceType] });
       toast({ title: 'Job confirmed!', description: 'Please rate your pro.' });
+      if (typeof window.gtag === 'function' && job?.price) {
+        window.gtag('event', 'conversion', { send_to: 'AW-18193036616/3ETTCIG0msQcEMjqjuND', value: job.price, currency: 'USD', transaction_id: id });
+      }
       setShowRating(true);
     } catch {
       toast({ title: 'Invalid code', description: 'Check the code with your pro.', variant: 'destructive' });
