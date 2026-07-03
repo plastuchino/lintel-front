@@ -288,3 +288,16 @@ export const prospects = {
   }) => api.post<{ quotes: Record<ServiceType, number>; prospectId: string }>('/prospects/quote', data),
 };
 
+export type CommercialServiceType = 'gutter-cleaning' | 'window-cleaning' | 'pressure-washing';
+
+export const commercialLeads = {
+  submit: (data: {
+    name: string;
+    email: string;
+    phone: string;
+    area?: string;
+    description?: string;
+    serviceType: CommercialServiceType;
+  }) => api.post<{ uuid: string }>('/commercial-leads', data),
+};
+

@@ -28,6 +28,10 @@ import BookingConfirmation from './pages/BookingConfirmation';
 import ServiceGutterCleaning from './pages/ServiceGutterCleaning';
 import ServicePressureWashing from './pages/ServicePressureWashing';
 import ServiceWindowCleaning from './pages/ServiceWindowCleaning';
+import Commercial from './pages/Commercial';
+import CommercialGutterCleaning from './pages/CommercialGutterCleaning';
+import CommercialPressureWashing from './pages/CommercialPressureWashing';
+import CommercialWindowCleaning from './pages/CommercialWindowCleaning';
 import Pricing from './pages/Pricing';
 import JobStatus from './pages/JobStatus';
 import QuoteSignup from './pages/QuoteSignup';
@@ -119,6 +123,10 @@ export default function App() {
               <Route path="/services/gutter-cleaning"  element={<ServiceGutterCleaning />} />
               <Route path="/services/pressure-washing" element={<ServicePressureWashing />} />
               <Route path="/services/window-cleaning"  element={<ServiceWindowCleaning />} />
+              <Route path="/commercial" element={<Commercial />} />
+              <Route path="/commercial/gutter-cleaning" element={<CommercialGutterCleaning />} />
+              <Route path="/commercial/pressure-washing" element={<CommercialPressureWashing />} />
+              <Route path="/commercial/window-cleaning" element={<CommercialWindowCleaning />} />
               <Route path="/quote-preview" element={<QuotePreview />} />
               <Route path="/b/:jobId" element={<JobStatus />} />
               <Route path="/book/q/:quoteId" element={<QuoteSignup />} />
