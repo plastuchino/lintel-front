@@ -17,8 +17,8 @@ const SERVICES = [
 ];
 
 export default function Commercial() {
-  const { cityName, geoResolved, requestLocation } = useGeoHeadline();
-  const h1Location = cityName ? `in ${cityName}, MD` : 'Near You';
+  const { cityName, stateAbbr, geoResolved, requestLocation } = useGeoHeadline();
+  const h1Location = cityName ? `in ${cityName}, ${stateAbbr}` : 'Near You';
 
   return (
     <div className="min-h-screen bg-white text-black" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>

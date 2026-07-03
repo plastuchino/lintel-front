@@ -48,9 +48,9 @@ const FAQ_SCHEMA = {
 
 export default function ServicePressureWashing() {
   const heroRef = useRef<HTMLElement>(null);
-  const { cityName, geoResolved, requestLocation } = useGeoHeadline();
-  const locationLabel = cityName ? `${cityName}, MD` : 'Near You';
-  const h1Location = cityName ? `in ${cityName}, MD` : 'Near You';
+  const { cityName, stateAbbr, geoResolved, requestLocation } = useGeoHeadline();
+  const locationLabel = cityName ? `${cityName}, ${stateAbbr}` : 'Near You';
+  const h1Location = cityName ? `in ${cityName}, ${stateAbbr}` : 'Near You';
   return (
     <div className="min-h-screen bg-white text-black pb-16 lg:pb-0" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
       <Helmet>
